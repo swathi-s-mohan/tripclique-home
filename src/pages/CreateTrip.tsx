@@ -5,12 +5,13 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { addTrip } from "@/data/trips";
+import { createTrip } from "@/utils/api";
 
 const CreateTrip = () => {
   const navigate = useNavigate();
   const [selectedPreferences, setSelectedPreferences] = useState<string[]>([]);
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   
   // Form state
   const [formData, setFormData] = useState({
@@ -59,30 +60,79 @@ const CreateTrip = () => {
     }));
   };
 
-  const handleCreateTrip = () => {
+  const handleCreateTrip = async () => {
     if (!formData.tripName.trim()) {
       alert('Please enter a trip name');
       return;
     }
 
-    const newTrip = addTrip({
-      name: formData.tripName,
-      subtitle: "Trip created! Let's start planning together.",
-      startDate: formData.startDate,
-      endDate: formData.endDate,
-      destinations: formData.preferredPlaces ? [formData.preferredPlaces] : [],
-      minBudget: formData.minBudget,
-      maxBudget: formData.maxBudget,
-      preferences: selectedPreferences,
-      amenities: selectedAmenities,
-      members: [
-        { id: "1", name: "You" }
-      ],
-      status: "planning"
-    });
+    setIsLoading(true);
 
-    // Navigate to the trip chat with the new trip ID
-    navigate(`/trip-chat/${newTrip.id}`);
+    try {
+      // Prepare date ranges
+      const dateRanges: string[] = [];
+      if (formData.startDate && formData.endDate) {
+        dateRanges.push(`${formData.startDate} to ${formData.endDate}`);
+      } else if (formData.startDate) {
+        dateRanges.push(formData.startDate);
+      }
+
+      // Prepare preferred places
+      const preferredPlaces: string[] = [];
+      if (formData.preferredPlaces.trim()) {
+        preferredPlaces.push(formData.preferredPlaces.trim());
+      }
+
+      // Calculate budget (use max budget if available, otherwise min budget)
+      const budget = formData.maxBudget 
+        ? parseInt(formData.maxBudget) 
+        : formData.minBudget 
+          ? parseInt(formData.minBudget) 
+          : 0;
+
+      // Prepare preferences (map to API format)
+      const preferences = selectedPreferences.map(pref => {
+        switch (pref) {
+          case 'beach': return 'Beach & Relax';
+          case 'culture': return 'Culture & History';
+          case 'adventure': return 'Adventure';
+          case 'food': return 'Food & Dining';
+          default: return pref;
+        }
+      });
+
+      // Prepare must-haves (map amenities to API format)
+      const mustHaves = selectedAmenities.map(amenity => {
+        switch (amenity) {
+          case 'wifi': return 'Free WiFi';
+          case 'pool': return 'Pool';
+          case 'nightlife': return 'Nightlife';
+          case 'shopping': return 'Shopping';
+          default: return amenity;
+        }
+      });
+
+      const requestBody = {
+        trip_name: formData.tripName.trim(),
+        user_id: "ada2870f-eb89-4e20-99db-fe10a28ba26f", // TODO: Get from auth context
+        date_ranges: dateRanges,
+        preferred_places: preferredPlaces,
+        budget: budget,
+        preferences: preferences,
+        must_haves: mustHaves
+      };
+
+      const newTrip = await createTrip(requestBody);
+      
+      // Navigate to the trip chat with the new trip ID
+      navigate(`/trip-chat/${newTrip.id || newTrip.trip_id}`);
+      
+    } catch (error) {
+      console.error('Error creating trip:', error);
+      alert('Failed to create trip. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -272,9 +322,10 @@ const CreateTrip = () => {
           <div className="pt-6 pb-8">
             <Button 
               onClick={handleCreateTrip}
-              className="w-full h-14 text-base font-semibold rounded-2xl bg-foreground text-background hover:bg-foreground/90"
+              disabled={isLoading}
+              className="w-full h-14 text-base font-semibold rounded-2xl bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50"
             >
-              Create & Open chat
+              {isLoading ? 'Creating trip...' : 'Create & Open chat'}
             </Button>
           </div>
         </main>

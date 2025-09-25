@@ -113,10 +113,10 @@ const JoinTrip = () => {
               <Input
                 id="inviteCode"
                 type="text"
-                placeholder="ENTER INVITE CODE..."
+                placeholder="Enter Invite Code"
                 value={inviteCode}
                 onChange={handleInviteCodeChange}
-                className={`pr-20 text-center font-mono text-lg tracking-wider ${
+                className={`pr-20 text-center font-mono text-lg tracking-wider justify-center ${
                   isError 
                     ? "border-destructive bg-destructive/10 text-destructive focus-visible:ring-destructive" 
                     : ""
@@ -135,15 +135,6 @@ const JoinTrip = () => {
                     <X className="h-4 w-4" />
                   </Button>
                 )}
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={handlePasteFromClipboard}
-                  className="h-6 w-6"
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
               </div>
             </div>
             

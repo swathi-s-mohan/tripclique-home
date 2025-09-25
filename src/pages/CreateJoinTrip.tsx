@@ -75,15 +75,6 @@ const CreateJoinTrip = () => {
               </div>
             </div>
           </div>
-          
-          {/* Invite Code Input */}
-          <div className="mt-8">
-            <Input
-              type="text"
-              placeholder="Enter Invite Code"
-              className="w-full h-12 rounded-xl border-border bg-muted/50 text-foreground placeholder:text-muted-foreground focus:border-ring"
-            />
-          </div>
         </main>
       </div>
     </div>
