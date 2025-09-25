@@ -47,7 +47,7 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // TripClique specific colors
+        // AmiGO specific colors
         "trip-avatar": {
           DEFAULT: "hsl(var(--trip-avatar-bg))",
           foreground: "hsl(var(--trip-avatar-foreground))",

@@ -8,7 +8,7 @@ const Index = () => {
       <div className="max-w-[390px] mx-auto min-h-screen bg-background">
         {/* Header */}
         <header className="px-6 py-6 border-b border-border">
-          <h1 className="text-2xl font-bold text-foreground">TripClique</h1>
+          <h1 className="text-2xl font-bold text-foreground">AmiGO</h1>
         </header>
         
         {/* Trip List */}
