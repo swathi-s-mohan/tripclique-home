@@ -95,3 +95,13 @@ export const sendChatMessage = async (messageData: {
     body: messageData,
   });
 };
+
+export const joinTripByCode = async (
+  code: string,
+  body: { user_id: string }
+) => {
+  return apiRequest(`/trips/join?code=${encodeURIComponent(code)}`, {
+    method: 'POST',
+    body,
+  });
+};

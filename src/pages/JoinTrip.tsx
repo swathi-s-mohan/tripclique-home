@@ -5,10 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { joinTripByCode } from "@/utils/api";
 
 const JoinTrip = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [inviteCode, setInviteCode] = useState("");
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -44,28 +47,47 @@ const JoinTrip = () => {
 
   const handleFindGroup = async () => {
     if (!inviteCode.trim()) return;
+    if (!user?.user_id) {
+      toast({
+        title: "Not logged in",
+        description: "Please log in again to join a trip.",
+        variant: "destructive",
+      });
+      navigate("/");
+      return;
+    }
 
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      // Simulate invalid code for demonstration
-      if (inviteCode === "INVALID" || inviteCode.length < 6) {
-        setIsError(true);
-        setIsLoading(false);
-        return;
+    setIsError(false);
+    try {
+      const resp = await joinTripByCode(inviteCode.trim(), { user_id: user.user_id });
+
+      const tripId =
+        typeof resp === 'string' || typeof resp === 'number'
+          ? String(resp)
+          : (resp?.tripId || resp?.trip_id || resp?.id);
+
+      if (!tripId) {
+        throw new Error('Trip ID missing in response');
       }
 
-      // Simulate successful join
-      setIsLoading(false);
       toast({
-        title: "Group found!",
-        description: `Joining trip with code ${inviteCode}...`,
+        title: "Joined successfully",
+        description: `Opening trip...`,
       });
-      
-      // Navigate to trip chat with the code
-      navigate(`/trip-chat/${inviteCode.toLowerCase()}`);
-    }, 1500);
+
+      navigate(`/trip-chat/${encodeURIComponent(String(tripId))}`);
+    } catch (err) {
+      console.error(err);
+      setIsError(true);
+      toast({
+        title: "Invalid or expired code",
+        description: "Please check the code and try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const isCodeValid = inviteCode.trim().length >= 6;
