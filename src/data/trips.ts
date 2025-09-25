@@ -87,7 +87,7 @@ export const trips: Trip[] = [
   },
   {
     id: 2,
-    name: "Europe Adventure",
+    trip_name: "Europe Adventure",
     subtitle: "Poll: Pick your preferred destination",
     timestamp: "1h ago",
     avatarContent: React.createElement(Users, { className: "w-6 h-6 text-trip-avatar-foreground" }),
@@ -115,7 +115,7 @@ export const trips: Trip[] = [
   },
   {
     id: 3,
-    name: "Tokyo Friends 🍜",
+    trip_name: "Tokyo Friends 🍜",
     subtitle: "Budget discussion in progress",
     timestamp: "3h ago",
     avatarContent: React.createElement(Users, { className: "w-6 h-6 text-trip-avatar-foreground" }),
@@ -142,7 +142,7 @@ export const trips: Trip[] = [
   },
   {
     id: 4,
-    name: "Beach Vibes 🏖️",
+    trip_name: "Beach Vibes 🏖️",
     subtitle: "Accommodation poll closing soon",
     timestamp: "1d ago",
     avatarContent: React.createElement(Users, { className: "w-6 h-6 text-trip-avatar-foreground" }),
@@ -181,7 +181,7 @@ export const addTrip = (newTrip: Omit<Trip, 'id' | 'avatarContent' | 'timestamp'
       {
         id: "1",
         type: "ai",
-        content: `Welcome to ${newTrip.name}! I'm your AI travel assistant. Let's plan the perfect trip together!`,
+        content: `Welcome to ${newTrip.trip_name}! I'm your AI travel assistant. Let's plan the perfect trip together!`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }
     ]

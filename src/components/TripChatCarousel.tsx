@@ -310,7 +310,7 @@ export const TripChatItem: React.FC<TripChatItemProps> = ({ trip }) => {
       <div className="bg-card border-b border-border rounded-t-2xl">
         <div className="p-4 flex items-center gap-3 relative">
           <div className="flex-1">
-            <h3 className="font-semibold text-lg">{currentTrip.name}</h3>
+            <h3 className="font-semibold text-lg">{currentTrip.trip_name}</h3>
             <div>
               <span className="text-xs text-muted-foreground">
                 {currentTrip.members?.slice(0, 3).map(member => member.name).join(', ')}
