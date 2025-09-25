@@ -7,6 +7,8 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect, useRef } from "react";
 import { DropdownMenu } from "@/components/DropdownMenu";
+import { BookingsModal } from "@/components/BookingsModal";
+import { ItineraryModal } from "@/components/ItineraryModal";
 
 const TripChat = () => {
   const { tripId } = useParams<{ tripId: string }>();
@@ -17,6 +19,8 @@ const TripChat = () => {
   const [activeTab, setActiveTab] = useState<'chat' | 'timeline'>('chat');
   const [aiAnalysisEnabled, setAiAnalysisEnabled] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [showBookingsModal, setShowBookingsModal] = useState(false);
+  const [showItineraryModal, setShowItineraryModal] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -304,6 +308,34 @@ const TripChat = () => {
         <div ref={messagesEndRef} />
               </div>
 
+          {/* Action Buttons */}
+          {(trip.status === 'booking' || trip.status === 'finalized') && (
+            <div className="px-4 pb-2">
+              <div className="flex gap-2 justify-center">
+                {(trip.status === 'booking' || trip.status === 'finalized') && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowBookingsModal(true)}
+                    className="rounded-full bg-white shadow-sm border-border hover:bg-muted/50"
+                  >
+                    Bookings
+                  </Button>
+                )}
+                {trip.status === 'finalized' && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowItineraryModal(true)}
+                    className="rounded-full bg-white shadow-sm border-border hover:bg-muted/50"
+                  >
+                    Itinerary
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Message Input */}
           <div className="p-4 border-t border-border">
             <div className="flex gap-2 items-center">
@@ -411,6 +443,16 @@ const TripChat = () => {
               </div>
             </div>
       )}
+
+      {/* Modals */}
+      <BookingsModal
+        isOpen={showBookingsModal}
+        onClose={() => setShowBookingsModal(false)}
+      />
+      <ItineraryModal
+        isOpen={showItineraryModal}
+        onClose={() => setShowItineraryModal(false)}
+      />
       </div>
     </div>
   );
