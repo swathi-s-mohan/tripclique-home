@@ -1,6 +1,6 @@
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { getTripById } from "@/data/trips";
-import { getChatsByTripId, sendChatMessage } from "@/utils/api";
+import { getChatsByTripId, sendAiAnalysis, sendChatMessage } from "@/utils/api";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   ArrowLeft,
@@ -18,6 +18,7 @@ import {
   Plane,
   FileText,
   Brain,
+  MapIcon,
   Sparkles,
   Building2,
 } from "lucide-react";
@@ -27,10 +28,10 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect, useRef } from "react";
 import { DropdownMenu } from "@/components/DropdownMenu";
-import { FlightCarousel } from "@/components/FlightCarousel";
-import { HotelCarousel } from "@/components/HotelCarousel";
 import { BookingsModal } from "@/components/BookingsModal";
 import { ItineraryModal } from "@/components/ItineraryModal";
+import { Consensus } from "@/types/consensus";
+import { DestinationCarousel } from "@/components/DestinationCarousal";
 
 const TripChat = () => {
   const { tripId } = useParams<{ tripId: string }>();
@@ -38,28 +39,40 @@ const TripChat = () => {
   const tripName = searchParams.get("tripName");
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [trips, setTrips] = useState<
+  const [messages, setMessages] = useState<
     {
       id?: number;
       trip_id: string;
       username: string;
       message: string;
       time: string;
+      consensus?: Consensus | null;
     }[]
   >();
   const [newMessage, setNewMessage] = useState("");
   const [showOptionsPanel, setShowOptionsPanel] = useState(false);
   const [activeTab, setActiveTab] = useState<"chat" | "timeline">("chat");
   const [isSendingMessage, setIsSendingMessage] = useState(false);
-  const [aiAnalysisEnabled, setAiAnalysisEnabled] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showBookingsModal, setShowBookingsModal] = useState(false);
   const [showItineraryModal, setShowItineraryModal] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const lastMessageCountRef = useRef(0);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [trips]);
+    if (!messages) return;
+    
+    const currentMessageCount = messages.length;
+    const lastMessageCount = lastMessageCountRef.current;
+    
+    // Only scroll if new messages were added (not just polling updates)
+    if (currentMessageCount > lastMessageCount) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+    
+    // Update the last message count
+    lastMessageCountRef.current = currentMessageCount;
+  }, [messages]);
 
   // Polling effect for fetching chats
   useEffect(() => {
@@ -68,24 +81,24 @@ const TripChat = () => {
     const fetchChats = async () => {
       try {
         const response = await getChatsByTripId(tripId);
-        setTrips(response);
+        setMessages(response);
       } catch (error) {
-        console.error('Failed to fetch chats:', error);
+        console.error("Failed to fetch chats:", error);
       }
     };
 
     // Initial fetch
     fetchChats();
 
-    // Set up polling every 0.3 seconds
-    // const interval = setInterval(fetchChats, 300);
+    //Set up polling every 0.3 seconds
+    const interval = setInterval(fetchChats, 5000);
 
-    // // Cleanup interval on unmount
-    // return () => clearInterval(interval);
+    // Cleanup interval on unmount
+    return () => clearInterval(interval);
   }, [tripId]);
 
   const handleSendMessage = async () => {
-    if (!newMessage.trim() || !trips || !user?.username || !tripId) return;
+    if (!newMessage.trim() || !messages || !user?.username || !tripId) return;
 
     setIsSendingMessage(true);
 
@@ -99,10 +112,15 @@ const TripChat = () => {
 
       // Send message to API
       await sendChatMessage(messageData);
-      
+
       // Add message to local state for immediate UI update
-      setTrips([...trips, messageData]);
+      setMessages([...messages, messageData]);
       setNewMessage("");
+      
+      // Force scroll to bottom when sending a message
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
     } catch (error) {
       console.error("Failed to send message:", error);
       // You could add a toast notification here for error feedback
@@ -111,99 +129,14 @@ const TripChat = () => {
     }
   };
 
-  // const handleAiAnalysis = () => {
-  //   if (isAnalyzing) return;
+  const handleAiAnalysis = async () => {
+    if (isAnalyzing) return;
+    setIsAnalyzing(true);
 
-  //   setIsAnalyzing(true);
-  //   setAiAnalysisEnabled(true);
+    await sendAiAnalysis(tripId);
 
-  //   // Simulate AI analysis
-  //   setTimeout(() => {
-  //     const aiMessage = {
-  //       id: `msg-${Date.now()}-ai-analysis`,
-  //       type: "ai" as const,
-  //       content:
-  //         "📊 Deep Analysis Complete! \n\n✅ Processed messages from group members\n✅ Identified budget range and preferences\n✅ Key interests and must-haves analyzed\n\nNow generating personalized recommendations...",
-  //       timestamp: new Date().toLocaleTimeString([], {
-  //         hour: "2-digit",
-  //         minute: "2-digit",
-  //       }),
-  //     };
-
-  //     if (trip.messages) {
-  //       trip.messages.push(aiMessage);
-  //       setTrip({ ...trip });
-  //     }
-
-  //     // Add flight recommendation after analysis
-  //     setTimeout(() => {
-  //       const flightMessage = {
-  //         id: `msg-${Date.now()}-flight`,
-  //         type: "flight" as const,
-  //         content:
-  //           "Based on your preferences, here are the best flight options:",
-  //         timestamp: new Date().toLocaleTimeString([], {
-  //           hour: "2-digit",
-  //           minute: "2-digit",
-  //         }),
-  //         flightData: [
-  //           {
-  //             departureTime: "09:15",
-  //             departureCode: "CCU",
-  //             departureCity: "Kolkata",
-  //             arrivalTime: "16:30",
-  //             arrivalCode: "DPS",
-  //             arrivalCity: "Bali",
-  //             flightDuration: "7h 15m",
-  //             airline: "Vistara",
-  //             flightCode: "UK 2847",
-  //             classType: "Premium Economy",
-  //             price: "₹55,000",
-  //             oldPrice: "₹72,000",
-  //             ctaText: "Book Now",
-  //           },
-  //           {
-  //             departureTime: "16:45",
-  //             departureCode: "HYD",
-  //             departureCity: "Hyderabad",
-  //             arrivalTime: "00:20",
-  //             arrivalCode: "DPS",
-  //             arrivalCity: "Bali",
-  //             flightDuration: "7h 35m",
-  //             airline: "Emirates",
-  //             flightCode: "EK 349",
-  //             classType: "Economy",
-  //             price: "₹48,500",
-  //             oldPrice: "₹68,000",
-  //             ctaText: "Book Now",
-  //           },
-  //           {
-  //             departureTime: "11:30",
-  //             departureCode: "MAA",
-  //             departureCity: "Chennai",
-  //             arrivalTime: "18:15",
-  //             arrivalCode: "DPS",
-  //             arrivalCity: "Bali",
-  //             flightDuration: "6h 45m",
-  //             airline: "Malaysia Airlines",
-  //             flightCode: "MH 180",
-  //             classType: "Economy",
-  //             price: "₹41,200",
-  //             oldPrice: "₹59,000",
-  //             ctaText: "Book Now",
-  //           },
-  //         ],
-  //       };
-
-  //       if (trip.messages) {
-  //         trip.messages.push(flightMessage);
-  //         setTrip({ ...trip });
-  //       }
-  //     }, 1500);
-
-  //     setIsAnalyzing(false);
-  //   }, 2000);
-  // };
+    setIsAnalyzing(false);
+  };
 
   const renderMessage = (message: {
     id?: number;
@@ -211,9 +144,11 @@ const TripChat = () => {
     username: string;
     message: string;
     time: string;
+    consensus?: Consensus | null;
   }) => {
     // const isUser = message.sender?.id === "1";
     // const isAi = message.type === "ai";
+    const isDestination = message.consensus !== null;
     // const isFlight = message.type === "flight";
     // const isHotel = message.type === "hotel";
 
@@ -222,22 +157,58 @@ const TripChat = () => {
     if (isCurrentUser) {
       // Right-aligned message for current user
       return (
-        <div key={message.id} className="flex justify-end gap-3 mb-4 items-center">
+        <div
+          key={message.id}
+          className="flex justify-end gap-3 mb-4 items-center"
+        >
           <div className="flex-1 max-w-[80%]">
             <div className="flex justify-end items-center gap-2 mb-1">
               <span className="text-xs text-muted-foreground">
-                {new Date(message.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                {new Date(message.time).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
               </span>
               <span className="text-sm font-medium">{message.username}</span>
             </div>
-            <p className="text-sm bg-muted p-3 rounded-lg">
-              {message.message}
-            </p>
+            <p className="text-sm bg-muted p-3 rounded-lg">{message.message}</p>
           </div>
           <div className="w-8 h-8 bg-gray-200 text-primary-foreground rounded-full flex items-center justify-center">
             <span className="text-sm font-medium text-gray-700">
               {message.username?.charAt(0).toUpperCase() || "U"}
             </span>
+          </div>
+        </div>
+      );
+    }
+
+    if (isDestination) {
+      return (
+        <div key={message.id} className="mb-4">
+          <div className="flex gap-3 mb-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-green-500 rounded-full flex items-center justify-center">
+              <MapIcon className="w-4 h-4 text-white" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">
+                  Destination Recommendations
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {new Date(message.time).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="ml-11">
+            <div className="bg-white border border-gray-200 rounded-2xl p-4">
+              <DestinationCarousel
+                destinations={message.consensus?.candidates}
+              />
+            </div>
           </div>
         </div>
       );
@@ -255,7 +226,10 @@ const TripChat = () => {
           <div className="flex items-center gap-2 mb-1">
             <span className="text-sm font-medium">{message.username}</span>
             <span className="text-xs text-muted-foreground">
-              {new Date(message.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              {new Date(message.time).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </span>
           </div>
           <p className="text-sm bg-muted p-3 rounded-lg">{message.message}</p>
@@ -462,7 +436,7 @@ const TripChat = () => {
   //   },
   // ];
 
-  if (!trips) {
+  if (!messages) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -480,7 +454,11 @@ const TripChat = () => {
         {/* Header */}
         <div className="bg-card border-b border-border sticky top-0 z-10">
           <div className="p-4 flex items-center gap-3 relative">
-            <Button variant="ghost" size="sm" onClick={() => navigate("/profile")}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate("/profile")}
+            >
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <div className="flex-1">
@@ -543,9 +521,7 @@ const TripChat = () => {
             <>
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-4">
-                {trips?.map(renderMessage)}
-                
-                
+                {messages?.map(renderMessage)}
                 <div ref={messagesEndRef} />
               </div>
 
@@ -631,7 +607,7 @@ const TripChat = () => {
                     </Button>
                   </div>
                   <Button
-                    // onClick={handleAiAnalysis}
+                    onClick={handleAiAnalysis}
                     disabled={isAnalyzing}
                     variant="ghost"
                     size="icon"
