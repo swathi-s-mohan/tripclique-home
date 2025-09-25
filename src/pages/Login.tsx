@@ -6,9 +6,11 @@ import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { login } from "@/utils/api";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login: loginUser } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -29,6 +31,22 @@ const Login = () => {
       });
       
       console.log("Login successful:", response);
+      
+      // Store user data in global state
+      // Assuming the API response contains username and user_id
+      if (response.username && response.user_id) {
+        loginUser({
+          username: response.username,
+          user_id: response.user_id,
+        });
+      } else {
+        // Fallback: use the username from form if API doesn't return it
+        loginUser({
+          username: formData.username,
+          user_id: response.user_id || response.id || formData.username, // fallback to username if no user_id
+        });
+      }
+      
       // Navigate to profile or dashboard after successful login
       navigate('/profile');
     } catch (error) {

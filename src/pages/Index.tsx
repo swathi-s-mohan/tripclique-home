@@ -7,14 +7,17 @@ import { cn } from "@/lib/utils";
 import { API_BASE_URL } from "@/constants";
 import { Trip } from "@/data/trips";
 import { getTripsByUser } from "@/utils/api";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const handleLogout = () => {
     console.log("Logging out...");
-    navigate("/login");
+    logout();
+    navigate("/");
     setShowProfileDropdown(false);
   };
 
@@ -24,12 +27,23 @@ const Index = () => {
 
   useEffect(() => {
     const fetchTrips = async () => {
-      const tripData = await getTripsByUser("Akhil md");
-      setLoading(false);
-      setTrips(tripData.trips);
+      if (user?.username) {
+        try {
+          const tripData = await getTripsByUser(user.username);
+          setTrips(tripData.trips);
+        } catch (error) {
+          console.error("Error fetching trips:", error);
+          setError("Failed to load trips");
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setLoading(false);
+        setError("User not authenticated");
+      }
     };
     fetchTrips();
-  }, []);
+  }, [user?.username]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -43,9 +57,9 @@ const Index = () => {
           <div className="relative">
             <button
               onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-              className="w-10 h-10 bg-muted rounded-full flex items-center justify-center hover:bg-muted/80 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              className="w-10 h-10 bg-primary text-primary-foreground rounded-full flex items-center justify-center hover:bg-primary/80 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 font-semibold text-sm"
             >
-              <User size={20} className="text-muted-foreground" />
+              {user?.username ? user.username.charAt(0).toUpperCase() : 'U'}
             </button>
 
             {/* Profile Dropdown */}
@@ -58,10 +72,7 @@ const Index = () => {
                 <div className="absolute top-full right-0 mt-2 w-56 bg-background border border-border rounded-xl shadow-lg z-50 py-2 animate-scale-in">
                   <div className="px-4 py-3 border-b border-border">
                     <p className="text-sm font-semibold text-foreground">
-                      Alex
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      alex@example.com
+                      {user?.username || "User"}
                     </p>
                   </div>
 

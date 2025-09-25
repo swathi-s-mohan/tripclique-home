@@ -6,9 +6,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { createTrip } from "@/utils/api";
+import { useAuth } from "@/contexts/AuthContext";
 
 const CreateTrip = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [selectedPreferences, setSelectedPreferences] = useState<string[]>([]);
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -114,7 +116,7 @@ const CreateTrip = () => {
 
       const requestBody = {
         trip_name: formData.tripName.trim(),
-        user_id: "ada2870f-eb89-4e20-99db-fe10a28ba26f", // TODO: Get from auth context
+        user_id: user?.user_id || "",
         date_ranges: dateRanges,
         preferred_places: preferredPlaces,
         budget: budget,
