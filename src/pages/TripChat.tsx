@@ -1,12 +1,14 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { getTripById } from "@/data/trips";
-import { ArrowLeft, Send, Bot, Users, MoreVertical, Copy, Share, BellOff, Download, Settings, LogOut, Calendar, Plane, FileText, Brain, Sparkles } from "lucide-react";
+import { ArrowLeft, Send, Bot, Users, MoreVertical, Copy, Share, BellOff, Download, Settings, LogOut, Calendar, Plane, FileText, Brain, Sparkles, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect, useRef } from "react";
 import { DropdownMenu } from "@/components/DropdownMenu";
+import { FlightCarousel } from "@/components/FlightCarousel";
+import { HotelCarousel } from "@/components/HotelCarousel";
 import { BookingsModal } from "@/components/BookingsModal";
 import { ItineraryModal } from "@/components/ItineraryModal";
 
@@ -54,20 +56,178 @@ const TripChat = () => {
       trip.messages = [message];
     }
 
+    const userMessage = newMessage.toLowerCase();
     setNewMessage('');
+    
+    // Check if user is asking about flights
+    const isFlightRelated = userMessage.includes('flight') || 
+                           userMessage.includes('fly') || 
+                           userMessage.includes('airline') || 
+                           userMessage.includes('plane') ||
+                           userMessage.includes('book flight') ||
+                           userMessage.includes('flight options');
+
+    // Check if user is asking about hotels
+    const isHotelRelated = userMessage.includes('hotel') || 
+                          userMessage.includes('accommodation') || 
+                          userMessage.includes('stay') || 
+                          userMessage.includes('resort') ||
+                          userMessage.includes('book hotel') ||
+                          userMessage.includes('hotel options');
     
     // Simulate AI response
     setTimeout(() => {
-      const aiResponse = {
-        id: `msg-${Date.now()}-ai`,
-        type: 'ai' as const,
-        content: "Thanks for your message! I'm here to help plan your trip. What would you like to know?",
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      
-      if (trip.messages) {
-        trip.messages.push(aiResponse);
-        setTrip({ ...trip });
+      if (isFlightRelated) {
+        // AI response for flight-related queries
+        const aiResponse = {
+          id: `msg-${Date.now()}-ai`,
+          type: 'ai' as const,
+          content: "I'll help you find the best flight options for your trip! Let me search for some great deals...",
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        
+        if (trip.messages) {
+          trip.messages.push(aiResponse);
+          setTrip({ ...trip });
+        }
+        
+        // Add flight recommendation after AI response
+        setTimeout(() => {
+          const flightMessage = {
+            id: `msg-${Date.now()}-flight`,
+            type: 'flight' as const,
+            content: "Here are some excellent flight options I found:",
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            flightData: [
+              {
+                departureTime: "08:30",
+                departureCode: "DEL",
+                departureCity: "Delhi",
+                arrivalTime: "14:45",
+                arrivalCode: "DPS",
+                arrivalCity: "Bali",
+                flightDuration: "7h 15m",
+                airline: "Singapore Airlines",
+                flightCode: "SQ 947",
+                classType: "Economy",
+                price: "₹45,000",
+                oldPrice: "₹65,000",
+                ctaText: "Book Now"
+              },
+              {
+                departureTime: "14:20",
+                departureCode: "BOM",
+                departureCity: "Mumbai",
+                arrivalTime: "22:35",
+                arrivalCode: "DPS",
+                arrivalCity: "Bali",
+                flightDuration: "8h 15m",
+                airline: "Air India",
+                flightCode: "AI 383",
+                classType: "Economy",
+                price: "₹42,500",
+                oldPrice: "₹58,000",
+                ctaText: "Book Now"
+              },
+              {
+                departureTime: "22:45",
+                departureCode: "BLR",
+                departureCity: "Bangalore",
+                arrivalTime: "06:30",
+                arrivalCode: "DPS",
+                arrivalCity: "Bali",
+                flightDuration: "7h 45m",
+                airline: "IndiGo",
+                flightCode: "6E 1471",
+                classType: "Economy",
+                price: "₹38,900",
+                oldPrice: "₹52,000",
+                ctaText: "Book Now"
+              }
+            ]
+          };
+          
+          if (trip.messages) {
+            trip.messages.push(flightMessage);
+            setTrip({ ...trip });
+          }
+        }, 1500);
+      } else if (isHotelRelated) {
+        // AI response for hotel-related queries
+        const aiResponse = {
+          id: `msg-${Date.now()}-ai`,
+          type: 'ai' as const,
+          content: "I'll help you find the perfect hotels for your stay! Let me search for some amazing options...",
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        
+        if (trip.messages) {
+          trip.messages.push(aiResponse);
+          setTrip({ ...trip });
+        }
+        
+        // Add hotel recommendation after AI response
+        setTimeout(() => {
+          const hotelMessage = {
+            id: `msg-${Date.now()}-hotel`,
+            type: 'hotel' as const,
+            content: "Here are some excellent hotel options I found:",
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            hotelData: [
+              {
+                imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+                title: "The Oberoi Bali",
+                dateRange: "Nov 14-18 • 4 nights",
+                description: "Luxury beachfront resort with stunning ocean views, world-class spa, and exceptional dining experiences.",
+                rating: 4.8,
+                isTopRated: true,
+                whyItMatches: ["Beach Access", "Luxury", "Spa"],
+                price: "₹25,000/night",
+                ctaText: "Book Now"
+              },
+              {
+                imageUrl: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+                title: "COMO Shambhala Estate",
+                dateRange: "Nov 14-18 • 4 nights",
+                description: "Wellness retreat nestled in tropical rainforest with holistic healing programs and organic cuisine.",
+                rating: 4.7,
+                isTopRated: false,
+                whyItMatches: ["Wellness", "Nature", "Organic Food"],
+                price: "₹18,500/night",
+                ctaText: "Book Now"
+              },
+              {
+                imageUrl: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+                title: "Alaya Resort Ubud",
+                dateRange: "Nov 14-18 • 4 nights",
+                description: "Boutique resort in the heart of Ubud with traditional Balinese architecture and cultural experiences.",
+                rating: 4.5,
+                isTopRated: false,
+                whyItMatches: ["Culture", "Boutique", "Central Location"],
+                price: "₹12,000/night",
+                ctaText: "Book Now"
+              }
+            ]
+          };
+          
+          if (trip.messages) {
+            trip.messages.push(hotelMessage);
+            setTrip({ ...trip });
+          }
+        }, 1500);
+      } else {
+        // Regular AI response
+        const aiResponse = {
+          id: `msg-${Date.now()}-ai`,
+          type: 'ai' as const,
+          content: "Thanks for your message! I'm here to help plan your trip. What would you like to know?",
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        
+        if (trip.messages) {
+          trip.messages.push(aiResponse);
+          setTrip({ ...trip });
+        }
       }
     }, 1000);
   };
@@ -91,19 +251,111 @@ const TripChat = () => {
         trip.messages.push(aiMessage);
         setTrip({ ...trip });
       }
+      
+      // Add flight recommendation after analysis
+      setTimeout(() => {
+        const flightMessage = {
+          id: `msg-${Date.now()}-flight`,
+          type: 'flight' as const,
+          content: "Based on your preferences, here are the best flight options:",
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          flightData: [
+            {
+              departureTime: "09:15",
+              departureCode: "CCU",
+              departureCity: "Kolkata",
+              arrivalTime: "16:30",
+              arrivalCode: "DPS",
+              arrivalCity: "Bali",
+              flightDuration: "7h 15m",
+              airline: "Vistara",
+              flightCode: "UK 2847",
+              classType: "Premium Economy",
+              price: "₹55,000",
+              oldPrice: "₹72,000",
+              ctaText: "Book Now"
+            },
+            {
+              departureTime: "16:45",
+              departureCode: "HYD",
+              departureCity: "Hyderabad",
+              arrivalTime: "00:20",
+              arrivalCode: "DPS",
+              arrivalCity: "Bali",
+              flightDuration: "7h 35m",
+              airline: "Emirates",
+              flightCode: "EK 349",
+              classType: "Economy",
+              price: "₹48,500",
+              oldPrice: "₹68,000",
+              ctaText: "Book Now"
+            },
+            {
+              departureTime: "11:30",
+              departureCode: "MAA",
+              departureCity: "Chennai",
+              arrivalTime: "18:15",
+              arrivalCode: "DPS",
+              arrivalCity: "Bali",
+              flightDuration: "6h 45m",
+              airline: "Malaysia Airlines",
+              flightCode: "MH 180",
+              classType: "Economy",
+              price: "₹41,200",
+              oldPrice: "₹59,000",
+              ctaText: "Book Now"
+            }
+          ]
+        };
+        
+        if (trip.messages) {
+          trip.messages.push(flightMessage);
+          setTrip({ ...trip });
+        }
+      }, 1500);
+      
       setIsAnalyzing(false);
     }, 2000);
   };
 
+
   const renderMessage = (message: {
     id: string;
-    type: 'user' | 'ai';
+    type: 'user' | 'ai' | 'flight' | 'hotel';
     sender?: { id: string; name: string };
     content: string;
     timestamp: string;
+    flightData?: Array<{
+      departureTime: string;
+      departureCode: string;
+      departureCity: string;
+      arrivalTime: string;
+      arrivalCode: string;
+      arrivalCity: string;
+      flightDuration: string;
+      airline: string;
+      flightCode: string;
+      classType: string;
+      price: string;
+      oldPrice?: string;
+      ctaText: string;
+    }>;
+    hotelData?: Array<{
+      imageUrl: string;
+      title: string;
+      dateRange: string;
+      description: string;
+      rating: number;
+      isTopRated?: boolean;
+      whyItMatches?: string[];
+      price: string;
+      ctaText: string;
+    }>;
   }) => {
     const isUser = message.sender?.id === "1";
     const isAi = message.type === 'ai';
+    const isFlight = message.type === 'flight';
+    const isHotel = message.type === 'hotel';
 
     if (isUser) {
   return (
@@ -136,6 +388,52 @@ const TripChat = () => {
               <span className="text-xs text-muted-foreground">{message.timestamp}</span>
             </div>
             <p className="text-sm bg-gradient-to-r from-purple-50 to-blue-50 p-3 rounded-lg whitespace-pre-line">{message.content}</p>
+          </div>
+        </div>
+      );
+    }
+
+    if (isFlight && message.flightData) {
+      return (
+        <div key={message.id} className="mb-4">
+          <div className="flex gap-3 mb-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-green-500 rounded-full flex items-center justify-center">
+              <Plane className="w-4 h-4 text-white" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">Flight Recommendations</span>
+                <span className="text-xs text-muted-foreground">{message.timestamp}</span>
+              </div>
+            </div>
+          </div>
+          <div className="ml-11">
+            <div className="bg-white border border-gray-200 rounded-2xl p-4">
+              <FlightCarousel flights={message.flightData} />
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (isHotel && message.hotelData) {
+      return (
+        <div key={message.id} className="mb-4">
+          <div className="flex gap-3 mb-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+              <Building2 className="w-4 h-4 text-white" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">Hotel Recommendations</span>
+                <span className="text-xs text-muted-foreground">{message.timestamp}</span>
+              </div>
+            </div>
+          </div>
+          <div className="ml-11">
+            <div className="bg-white border border-gray-200 rounded-2xl p-4">
+              <HotelCarousel hotels={message.hotelData} />
+            </div>
           </div>
         </div>
       );
@@ -368,6 +666,7 @@ const TripChat = () => {
                 variant="ghost"
                 size="icon"
                 className="w-12 h-12 rounded-full border border-gray-200 bg-white hover:bg-gray-50"
+                title="AI Analysis"
               >
                 {isAnalyzing ? (
                   <Brain className="w-5 h-5 text-gray-800 animate-pulse" />

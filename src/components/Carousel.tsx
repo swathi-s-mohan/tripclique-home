@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import useEmblaCarousel from 'embla-carousel-react';
+import useEmblaCarousel, { UseEmblaCarouselType } from 'embla-carousel-react';
 import { cn } from '@/lib/utils';
 
 interface CarouselProps {
@@ -20,7 +20,10 @@ export const Carousel: React.FC<CarouselProps> = ({
     align: 'start',
     containScroll: 'trimSnaps',
     dragFree: false,
-    slidesToScroll: 1
+    slidesToScroll: 1,
+    skipSnaps: false,
+    duration: 20,
+    dragThreshold: 10
   });
 
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -31,12 +34,16 @@ export const Carousel: React.FC<CarouselProps> = ({
     [emblaApi]
   );
 
-  const onInit = useCallback((emblaApi: any) => {
-    setScrollSnaps(emblaApi.scrollSnapList());
+  const onInit = useCallback((emblaApi: UseEmblaCarouselType[1]) => {
+    if (emblaApi) {
+      setScrollSnaps(emblaApi.scrollSnapList());
+    }
   }, []);
 
-  const onSelect = useCallback((emblaApi: any) => {
-    setSelectedIndex(emblaApi.selectedScrollSnap());
+  const onSelect = useCallback((emblaApi: UseEmblaCarouselType[1]) => {
+    if (emblaApi) {
+      setSelectedIndex(emblaApi.selectedScrollSnap());
+    }
   }, []);
 
   useEffect(() => {
@@ -49,14 +56,18 @@ export const Carousel: React.FC<CarouselProps> = ({
   }, [emblaApi, onInit, onSelect]);
 
   return (
-    <div className={cn("w-full max-w-sm", className)}>
+    <div className={cn("w-full", className)}>
       {/* Carousel Container */}
-      <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex gap-4 ml-4">
+      <div 
+        className="overflow-hidden cursor-grab active:cursor-grabbing" 
+        ref={emblaRef}
+        style={{ touchAction: 'pan-y pinch-zoom' }}
+      >
+        <div className="flex gap-4">
           {children.map((child, index) => (
             <div
               key={index}
-              className="flex-none w-80 first:ml-0 last:mr-4"
+              className="flex-none min-w-0 w-full select-none"
             >
               {child}
             </div>

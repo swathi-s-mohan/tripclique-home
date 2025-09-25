@@ -34,7 +34,7 @@ export const FlightCard: React.FC<FlightCardProps> = ({
   ctaText
 }) => {
   return (
-    <div className="w-full max-w-sm bg-background rounded-2xl shadow-sm border border-border p-4 space-y-4">
+    <div className="w-full bg-background rounded-2xl shadow-sm border border-border p-4 space-y-4">
       {/* Flight Route Section */}
       <div className="flex items-center justify-between">
         {/* Departure */}
@@ -88,9 +88,9 @@ export const FlightCard: React.FC<FlightCardProps> = ({
             <div className="text-sm text-muted-foreground line-through">{oldPrice}</div>
           )}
         </div>
-        <Button className="bg-black text-white hover:bg-black/90 rounded-full px-6 gap-1">
+        <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl px-8 py-3 gap-2 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
           {ctaText}
-          <ArrowRight size={16} />
+          <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
         </Button>
       </div>
     </div>

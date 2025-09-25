@@ -27,7 +27,7 @@ export const HotelCard: React.FC<HotelCardProps> = ({
   ctaText
 }) => {
   return (
-    <div className="w-full max-w-sm bg-background rounded-2xl shadow-sm border border-border overflow-hidden">
+    <div className="w-full bg-background rounded-2xl shadow-sm border border-border overflow-hidden">
       {/* Image Banner with Overlays */}
       <div className="relative w-full h-48 overflow-hidden">
         <img 
@@ -92,13 +92,13 @@ export const HotelCard: React.FC<HotelCardProps> = ({
         )}
         
         {/* Price and CTA */}
-        <div className="flex items-center justify-between pt-2">
-          <div className="text-xl font-bold text-foreground">
+        <div className="space-y-3 pt-2">
+          <div className="text-xl font-bold text-foreground text-center">
             {price}
           </div>
-          <Button className="bg-black text-white hover:bg-black/90 rounded-full px-6 gap-1">
+          <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-xl px-8 py-3 gap-2 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
             {ctaText}
-            <ArrowRight size={16} />
+            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
       </div>
