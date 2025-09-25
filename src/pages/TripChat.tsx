@@ -467,7 +467,7 @@ const TripChat = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-xl font-semibold mb-2">Trip not found</h1>
-          <Button onClick={() => navigate("/")}>Go Home</Button>
+          <Button onClick={() => navigate("/profile")}>Go Home</Button>
         </div>
       </div>
     );
@@ -480,7 +480,7 @@ const TripChat = () => {
         {/* Header */}
         <div className="bg-card border-b border-border sticky top-0 z-10">
           <div className="p-4 flex items-center gap-3 relative">
-            <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
+            <Button variant="ghost" size="sm" onClick={() => navigate("/profile")}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <div className="flex-1">

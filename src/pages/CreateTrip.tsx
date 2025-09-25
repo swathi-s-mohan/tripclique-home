@@ -127,7 +127,7 @@ const CreateTrip = () => {
       const newTrip = await createTrip(requestBody);
       
       // Navigate to the trip chat with the new trip ID
-      navigate(`/trip-chat/${newTrip.id || newTrip.trip_id}`);
+      navigate(`/trip-chat/${newTrip.id || newTrip.trip_id}?tripName=${formData.tripName}`);
       
     } catch (error) {
       console.error('Error creating trip:', error);
