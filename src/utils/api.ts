@@ -52,3 +52,9 @@ export const createTrip = async (tripData: {
     body: tripData,
   });
 };
+
+export const getTripsByUser = async (username: string) => {
+  return apiRequest(`/trips/by-user/${username}`, {
+    method: 'GET',
+  });
+};

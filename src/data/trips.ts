@@ -3,7 +3,7 @@ import { Users } from "lucide-react";
 
 export interface Trip {
   id: number;
-  name: string;
+  trip_name: string;
   subtitle: string;
   timestamp: string;
   avatarContent: React.ReactNode;
@@ -38,7 +38,7 @@ export interface Trip {
 export const trips: Trip[] = [
   {
     id: 1,
-    name: "Bali Squad ✈️",
+    trip_name: "Bali Squad ✈️",
     subtitle: "Consensus reached on Nov 14-18. Generate...",
     timestamp: "2m ago",
     avatarContent: React.createElement(Users, { className: "w-6 h-6 text-trip-avatar-foreground" }),

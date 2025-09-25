@@ -549,7 +549,7 @@ const TripChat = () => {
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div className="flex-1">
-            <h1>{trip.name}</h1>
+            <h1>{trip.trip_name}</h1>
             <div>
               <span className="text-xs text-muted-foreground">
                 {trip.members?.slice(0, 3).map(member => member.name).join(', ')}

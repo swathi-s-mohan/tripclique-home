@@ -13,6 +13,8 @@ interface TripCardProps {
 export const TripCard = ({ tripId, tripName, subtitle, timestamp, avatarContent }: TripCardProps) => {
   const navigate = useNavigate();
 
+  console.log({ tripId });
+
   const handleTripClick = () => {
     navigate(`/trip-chat/${tripId}`);
   };

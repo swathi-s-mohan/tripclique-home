@@ -1,9 +1,12 @@
+import { useState, useEffect } from "react";
 import { TripList } from "@/components/TripList";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
-import { useState } from "react";
 import { User, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { API_BASE_URL } from "@/constants";
+import { Trip } from "@/data/trips";
+import { getTripsByUser } from "@/utils/api";
 
 const Index = () => {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
@@ -15,6 +18,19 @@ const Index = () => {
     setShowProfileDropdown(false);
   };
 
+  const [trips, setTrips] = useState<Trip[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchTrips = async () => {
+      const tripData = await getTripsByUser("Akhil md");
+      setLoading(false);
+      setTrips(tripData.trips);
+    };
+    fetchTrips();
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Mobile Container */}
@@ -22,7 +38,7 @@ const Index = () => {
         {/* Header */}
         <header className="px-6 py-6 border-b border-border flex items-center justify-between relative">
           <h1 className="text-2xl font-bold text-foreground">AmiGO</h1>
-          
+
           {/* Profile Button */}
           <div className="relative">
             <button
@@ -35,16 +51,20 @@ const Index = () => {
             {/* Profile Dropdown */}
             {showProfileDropdown && (
               <>
-                <div 
-                  className="fixed inset-0 z-40" 
+                <div
+                  className="fixed inset-0 z-40"
                   onClick={() => setShowProfileDropdown(false)}
                 />
                 <div className="absolute top-full right-0 mt-2 w-56 bg-background border border-border rounded-xl shadow-lg z-50 py-2 animate-scale-in">
                   <div className="px-4 py-3 border-b border-border">
-                    <p className="text-sm font-semibold text-foreground">Alex</p>
-                    <p className="text-xs text-muted-foreground">alex@example.com</p>
+                    <p className="text-sm font-semibold text-foreground">
+                      Alex
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      alex@example.com
+                    </p>
                   </div>
-                  
+
                   <button
                     onClick={handleLogout}
                     className={cn(
@@ -60,12 +80,22 @@ const Index = () => {
             )}
           </div>
         </header>
-        
+
         {/* Trip List */}
         <main className="pb-20">
-          <TripList />
+          {loading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-muted-foreground">Loading trips...</div>
+            </div>
+          ) : error ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-destructive">Error: {error}</div>
+            </div>
+          ) : (
+            <TripList trips={trips} />
+          )}
         </main>
-        
+
         {/* Floating Action Button */}
         <FloatingActionButton />
       </div>
