@@ -521,7 +521,27 @@ const TripChat = () => {
             <>
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-4">
+                {/* Welcome Message */}
+                <div className="mb-4">
+                  <div className="flex gap-3 mb-4 items-center">
+                    <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                      <span className="text-sm font-medium text-gray-700">AI</span>
+                    </div>
+                    <div className="flex-1 max-w-[80%]">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-sm font-medium">AI Assistant</span>
+                        <span className="text-xs text-muted-foreground">Just now</span>
+                      </div>
+                      <p className="text-sm bg-muted p-3 rounded-lg">
+                        Welcome to {tripName || "your trip"}! 🎉 I'm your AmiGO, your AI travel assistant. I'm here to help you plan the perfect trip. Discuss your preferences, ask about destinations, flights, hotels, or request your itinerary!
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 {messages?.map(renderMessage)}
+                
+                
                 <div ref={messagesEndRef} />
               </div>
 
