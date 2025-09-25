@@ -9,7 +9,7 @@ interface TripCardProps {
   tripName: string;
   latest_message: string;
   latest_message_at: string;
-  avatarContent?: React.ReactNode;
+  avatarIcon?: string;
 }
 
 export const TripCard = ({
@@ -17,7 +17,7 @@ export const TripCard = ({
   tripName,
   latest_message,
   latest_message_at,
-  avatarContent,
+  avatarIcon,
 }: TripCardProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -31,10 +31,20 @@ export const TripCard = ({
       onClick={handleTripClick}
     >
       {/* Avatar */}
-      <div className="w-12 h-12 rounded-full bg-trip-avatar flex items-center justify-center flex-shrink-0">
-        {avatarContent || (
-          <Users className="w-6 h-6 text-trip-avatar-foreground" />
-        )}
+      <div className="w-12 h-12 rounded-full bg-trip-avatar flex items-center justify-center flex-shrink-0 overflow-hidden">
+        {avatarIcon ? (
+          <img
+            src={avatarIcon}
+            alt={`${tripName} avatar`}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              // Fallback to default icon if image fails to load
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.nextElementSibling?.classList.remove('hidden');
+            }}
+          />
+        ) : null}
+        <Users className={`w-6 h-6 text-trip-avatar-foreground ${avatarIcon ? 'hidden' : ''}`} />
       </div>
 
       {/* Trip Info */}
