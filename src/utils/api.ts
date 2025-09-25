@@ -83,3 +83,15 @@ export const getChatsByTripId = async (tripId: string) => {
     method: 'GET',
   });
 };
+
+export const sendChatMessage = async (messageData: {
+  trip_id: string;
+  username: string;
+  message: string;
+  time: string;
+}) => {
+  return apiRequest('/chats', {
+    method: 'POST',
+    body: messageData,
+  });
+};

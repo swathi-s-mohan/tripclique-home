@@ -1,6 +1,7 @@
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { getTripById } from "@/data/trips";
-import { getChatsByTripId } from "@/utils/api";
+import { getChatsByTripId, sendChatMessage } from "@/utils/api";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   ArrowLeft,
   Send,
@@ -36,6 +37,7 @@ const TripChat = () => {
   const [searchParams] = useSearchParams();
   const tripName = searchParams.get("tripName");
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [trips, setTrips] = useState<
     {
       id?: number;
@@ -48,6 +50,7 @@ const TripChat = () => {
   const [newMessage, setNewMessage] = useState("");
   const [showOptionsPanel, setShowOptionsPanel] = useState(false);
   const [activeTab, setActiveTab] = useState<"chat" | "timeline">("chat");
+  const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [aiAnalysisEnabled, setAiAnalysisEnabled] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showBookingsModal, setShowBookingsModal] = useState(false);
@@ -81,21 +84,31 @@ const TripChat = () => {
     // return () => clearInterval(interval);
   }, [tripId]);
 
-  const handleSendMessage = () => {
-    if (!newMessage.trim() || !trips) return;
+  const handleSendMessage = async () => {
+    if (!newMessage.trim() || !trips || !user?.username || !tripId) return;
 
-    const message = {
-      trip_id: tripId,
-      username: "jerina",
-      message: newMessage,
-      time: new Date().toISOString(),
-    };
+    setIsSendingMessage(true);
 
-    // Add message to trip
-    setTrips([...trips, message]);
+    try {
+      const messageData = {
+        trip_id: tripId,
+        username: user.username,
+        message: newMessage,
+        time: new Date().toISOString(),
+      };
 
-    const userMessage = newMessage.toLowerCase();
-    setNewMessage("");
+      // Send message to API
+      await sendChatMessage(messageData);
+      
+      // Add message to local state for immediate UI update
+      setTrips([...trips, messageData]);
+      setNewMessage("");
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      // You could add a toast notification here for error feedback
+    } finally {
+      setIsSendingMessage(false);
+    }
   };
 
   // const handleAiAnalysis = () => {
@@ -204,18 +217,45 @@ const TripChat = () => {
     // const isFlight = message.type === "flight";
     // const isHotel = message.type === "hotel";
 
+    const isCurrentUser = message.username === user?.username;
+
+    if (isCurrentUser) {
+      // Right-aligned message for current user
+      return (
+        <div key={message.id} className="flex justify-end gap-3 mb-4 items-center">
+          <div className="flex-1 max-w-[80%]">
+            <div className="flex justify-end items-center gap-2 mb-1">
+              <span className="text-xs text-muted-foreground">
+                {new Date(message.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </span>
+              <span className="text-sm font-medium">{message.username}</span>
+            </div>
+            <p className="text-sm bg-muted p-3 rounded-lg">
+              {message.message}
+            </p>
+          </div>
+          <div className="w-8 h-8 bg-gray-200 text-primary-foreground rounded-full flex items-center justify-center">
+            <span className="text-sm font-medium text-gray-700">
+              {message.username?.charAt(0).toUpperCase() || "U"}
+            </span>
+          </div>
+        </div>
+      );
+    }
+
+    // Left-aligned message for other users
     return (
-      <div key={message.id} className="flex gap-3 mb-4">
+      <div key={message.id} className="flex gap-3 mb-4 items-center">
         <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
           <span className="text-sm font-medium text-gray-700">
             {message.username?.charAt(0).toUpperCase() || "U"}
           </span>
         </div>
-        <div className="flex-1">
+        <div className="flex-1 max-w-[80%]">
           <div className="flex items-center gap-2 mb-1">
             <span className="text-sm font-medium">{message.username}</span>
             <span className="text-xs text-muted-foreground">
-              {message.time}
+              {new Date(message.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </span>
           </div>
           <p className="text-sm bg-muted p-3 rounded-lg">{message.message}</p>
@@ -554,12 +594,16 @@ const TripChat = () => {
                     />
                     <Button
                       onClick={handleSendMessage}
-                      disabled={!newMessage.trim()}
+                      disabled={!newMessage.trim() || isSendingMessage}
                       variant="ghost"
                       size="icon"
                       className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-full hover:bg-gray-100"
                     >
-                      <Send className="w-4 h-4 text-gray-600" />
+                      {isSendingMessage ? (
+                        <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+                      ) : (
+                        <Send className="w-4 h-4 text-gray-600" />
+                      )}
                     </Button>
                   </div>
                   <Button
