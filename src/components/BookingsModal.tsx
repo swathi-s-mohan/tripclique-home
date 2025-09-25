@@ -13,17 +13,7 @@ export const BookingsModal = ({ isOpen, onClose }: BookingsModalProps) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-[350px] p-0 rounded-xl">
         <DialogHeader className="p-6 pb-4">
-          <div className="flex items-center justify-between">
-            <DialogTitle className="text-xl font-bold">Bookings</DialogTitle>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-              className="w-8 h-8 rounded-full hover:bg-muted"
-            >
-              <X className="w-4 h-4" />
-            </Button>
-          </div>
+          <DialogTitle className="text-xl font-bold text-center">Bookings</DialogTitle>
         </DialogHeader>
 
         <div className="px-6 pb-6 space-y-6">
