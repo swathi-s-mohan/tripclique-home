@@ -5,20 +5,38 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import { login } from "@/utils/api";
 
 const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Form submission logic would go here
-    console.log("Login attempt with:", formData);
-    navigate('/profile');
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await login({
+        username: formData.username,
+        password: formData.password,
+      });
+      
+      console.log("Login successful:", response);
+      // Navigate to profile or dashboard after successful login
+      navigate('/profile');
+    } catch (error) {
+      console.error("Login failed:", error);
+      setError("Invalid username or password. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,6 +67,13 @@ const Login = () => {
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-foreground mb-2">Welcome back to AmiGO!</h2>
           </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+              {error}
+            </div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -99,9 +124,9 @@ const Login = () => {
             <Button
               type="submit"
               className="w-full h-12 rounded-xl text-base font-semibold shadow-md hover:shadow-lg transition-all duration-200 mt-8"
-              disabled={!formData.username || !formData.password}
+              disabled={!formData.username || !formData.password || isLoading}
             >
-              Login
+              {isLoading ? "Logging in..." : "Login"}
             </Button>
           </form>
 

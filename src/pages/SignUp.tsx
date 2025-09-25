@@ -4,19 +4,45 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
+import { signUp } from "@/utils/api";
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Form submission logic would go here
-    console.log("Sign up attempt with:", formData);
+    
+    if (!formData.username.trim() || !formData.password.trim()) {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await signUp({
+        username: formData.username.trim(),
+        password: formData.password,
+      });
+
+      console.log('Sign up successful:', response);
+      
+      // Navigate to login or dashboard
+      alert('Account created successfully! Please login.');
+      navigate('/');
+      
+    } catch (error) {
+      console.error('Sign up failed:', error);
+      alert('Failed to create account. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,10 +117,10 @@ const SignUp = () => {
             {/* Create Account Button */}
             <Button
               type="submit"
-              className="w-full h-12 rounded-xl text-base font-semibold shadow-md hover:shadow-lg transition-all duration-200 mt-8"
-              disabled={!formData.username || !formData.password}
+              className="w-full h-12 rounded-xl text-base font-semibold shadow-md hover:shadow-lg transition-all duration-200 mt-8 disabled:opacity-50"
+              disabled={!formData.username || !formData.password || isLoading}
             >
-              Create Account
+              {isLoading ? 'Creating Account...' : 'Create Account'}
             </Button>
           </form>
         </div>

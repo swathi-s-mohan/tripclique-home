@@ -58,3 +58,22 @@ export const getTripsByUser = async (username: string) => {
     method: 'GET',
   });
 };
+export const signUp = async (userData: {
+  username: string;
+  password: string;
+}) => {
+  return apiRequest('/users/signup', {
+    method: 'POST',
+    body: userData,
+  });
+};
+
+export const login = async (userData: {
+  username: string;
+  password: string;
+}) => {
+  return apiRequest('/users/login', {
+    method: 'POST',
+    body: userData,
+  });
+};
