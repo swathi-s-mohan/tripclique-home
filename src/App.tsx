@@ -19,8 +19,8 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/profile" element={<Index />} />
           <Route path="/create-join" element={<CreateJoinTrip />} />
           <Route path="/create-trip" element={<CreateTrip />} />
            <Route path="/trip-chat/:tripId" element={<TripChat />} /> 

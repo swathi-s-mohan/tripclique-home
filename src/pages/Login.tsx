@@ -32,6 +32,7 @@ const Login = () => {
               onClick={() => {
                 // Handle phone login
                 console.log("Phone login clicked");
+                navigate('/profile');
               }}
             >
               Continue with Phone
