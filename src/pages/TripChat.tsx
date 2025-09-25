@@ -67,14 +67,24 @@ const TripChat = () => {
     const currentMessageCount = messages.length;
     const lastMessageCount = lastMessageCountRef.current;
     
-    // Only scroll if new messages were added (not just polling updates)
-    if (currentMessageCount > lastMessageCount) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // Scroll to end if:
+    // 1. New messages were added (not just polling updates)
+    // 2. This is the initial load (lastMessageCount is 0)
+    if (currentMessageCount > lastMessageCount || lastMessageCount === 0) {
+      // Use setTimeout to ensure DOM is updated
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
     }
     
     // Update the last message count
     lastMessageCountRef.current = currentMessageCount;
   }, [messages]);
+
+  // Reset message count when tripId changes (new trip selected)
+  useEffect(() => {
+    lastMessageCountRef.current = 0;
+  }, [tripId]);
 
   // Polling effect for fetching chats
   useEffect(() => {
@@ -530,7 +540,7 @@ const TripChat = () => {
           activeTab === "chat" ? (
             <>
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4">
+              <div className="flex-1 overflow-y-auto p-4 pb-2">
                 {/* Welcome Message */}
                 <div className="mb-4">
                   <div className="flex gap-3 mb-4 items-center">
@@ -584,72 +594,75 @@ const TripChat = () => {
               </div>
             )} */}
 
-              {/* Action Buttons */}
-              <div className="px-4 py-2 border-t border-border">
-                <div className="flex gap-2 justify-center">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowBookingsModal(true)}
-                    className="rounded-full bg-white shadow-sm border-border hover:bg-muted/50"
-                  >
-                    Bookings
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowItineraryModal(true)}
-                    className="rounded-full bg-white shadow-sm border-border hover:bg-muted/50"
-                  >
-                    Itinerary
-                  </Button>
-                </div>
-              </div>
-
-              {/* Message Input */}
-              <div className="p-4 pt-2">
-                <div className="flex gap-2 items-center">
-                  <div className="relative flex-1">
-                    <Input
-                      placeholder="Message"
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          handleSendMessage();
-                        }
-                      }}
-                      className="pr-12 bg-white border-gray-200 rounded-full h-12"
-                    />
+              {/* Fixed Bottom Section */}
+              <div className="sticky bottom-0 bg-background border-t border-border">
+                {/* Action Buttons */}
+                <div className="px-4 py-2">
+                  <div className="flex gap-2 justify-center">
                     <Button
-                      onClick={handleSendMessage}
-                      disabled={!newMessage.trim() || isSendingMessage}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowBookingsModal(true)}
+                      className="rounded-full bg-white shadow-sm border-border hover:bg-muted/50"
+                    >
+                      Bookings
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowItineraryModal(true)}
+                      className="rounded-full bg-white shadow-sm border-border hover:bg-muted/50"
+                    >
+                      Itinerary
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Message Input */}
+                <div className="p-4 pt-2">
+                  <div className="flex gap-2 items-center">
+                    <div className="relative flex-1">
+                      <Input
+                        placeholder="Message"
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleSendMessage();
+                          }
+                        }}
+                        className="pr-12 bg-white border-gray-200 rounded-full h-12"
+                      />
+                      <Button
+                        onClick={handleSendMessage}
+                        disabled={!newMessage.trim() || isSendingMessage}
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-full hover:bg-gray-100"
+                      >
+                        {isSendingMessage ? (
+                          <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+                        ) : (
+                          <Send className="w-4 h-4 text-gray-600" />
+                        )}
+                      </Button>
+                    </div>
+                    <Button
+                      onClick={handleAiAnalysis}
+                      disabled={isAnalyzing}
                       variant="ghost"
                       size="icon"
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-full hover:bg-gray-100"
+                      className="w-12 h-12 rounded-full border border-gray-200 bg-white hover:bg-gray-50"
+                      title="AI Analysis"
                     >
-                      {isSendingMessage ? (
-                        <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+                      {isAnalyzing ? (
+                        <Brain className="w-5 h-5 text-gray-800 animate-pulse" />
                       ) : (
-                        <Send className="w-4 h-4 text-gray-600" />
+                        <Sparkles className="w-5 h-5 text-gray-800" />
                       )}
                     </Button>
                   </div>
-                  <Button
-                    onClick={handleAiAnalysis}
-                    disabled={isAnalyzing}
-                    variant="ghost"
-                    size="icon"
-                    className="w-12 h-12 rounded-full border border-gray-200 bg-white hover:bg-gray-50"
-                    title="AI Analysis"
-                  >
-                    {isAnalyzing ? (
-                      <Brain className="w-5 h-5 text-gray-800 animate-pulse" />
-                    ) : (
-                      <Sparkles className="w-5 h-5 text-gray-800" />
-                    )}
-                  </Button>
                 </div>
               </div>
             </>
