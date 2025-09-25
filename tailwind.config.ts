@@ -47,6 +47,18 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // TripClique specific colors
+        "trip-avatar": {
+          DEFAULT: "hsl(var(--trip-avatar-bg))",
+          foreground: "hsl(var(--trip-avatar-foreground))",
+        },
+        "trip-card-hover": "hsl(var(--trip-card-hover))",
+        timestamp: "hsl(var(--timestamp))",
+        fab: {
+          DEFAULT: "hsl(var(--fab-bg))",
+          foreground: "hsl(var(--fab-foreground))",
+          shadow: "hsl(var(--fab-shadow))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

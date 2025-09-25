@@ -1,11 +1,23 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { TripList } from "@/components/TripList";
+import { FloatingActionButton } from "@/components/FloatingActionButton";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="min-h-screen bg-background">
+      {/* Mobile Container */}
+      <div className="max-w-[390px] mx-auto min-h-screen bg-background">
+        {/* Header */}
+        <header className="px-6 py-6 border-b border-border">
+          <h1 className="text-2xl font-bold text-foreground">TripClique</h1>
+        </header>
+        
+        {/* Trip List */}
+        <main className="pb-20">
+          <TripList />
+        </main>
+        
+        {/* Floating Action Button */}
+        <FloatingActionButton />
       </div>
     </div>
   );
