@@ -1,9 +1,7 @@
 import { ArrowLeft, Plus, UserPlus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 
-const CreateJoinTrip = () => {
+const CreateJoinTrip = ({ showHeader = true }: { showHeader?: boolean }) => {
   const navigate = useNavigate();
 
   return (
@@ -11,7 +9,8 @@ const CreateJoinTrip = () => {
       {/* Mobile Container */}
       <div className="max-w-[390px] mx-auto min-h-screen bg-background">
         {/* Header */}
-        <header className="px-6 py-6 border-b border-border flex items-center">
+        {showHeader && (
+          <header className="px-6 py-6 border-b border-border flex items-center">
           <button 
             onClick={() => navigate('/')}
             className="mr-4 p-1 hover:bg-accent rounded-md transition-colors"
@@ -20,6 +19,7 @@ const CreateJoinTrip = () => {
           </button>
           <h1 className="text-2xl font-bold text-foreground">amiGO</h1>
         </header>
+        )}
         
         {/* Main Content */}
         <main className="px-6 py-12">

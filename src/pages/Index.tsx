@@ -2,13 +2,14 @@ import { useState, useEffect } from "react";
 import { TripList } from "@/components/TripList";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
 import TripListShimmer from "@/components/TripListShimmer";
-import { User, LogOut } from "lucide-react";
+import { User, LogOut, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { API_BASE_URL } from "@/constants";
 import { Trip } from "@/data/trips";
 import { getTripsByUser } from "@/utils/api";
 import { useAuth } from "@/contexts/AuthContext";
+import CreateJoinTrip from "./CreateJoinTrip";
 
 const Index = () => {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
@@ -106,13 +107,15 @@ const Index = () => {
             <div className="flex items-center justify-center py-8">
               <div className="text-destructive">Error: {error}</div>
             </div>
-          ) : (
+           ) : trips.length > 0 ? (
             <TripList trips={trips} />
+          ) : (
+            <CreateJoinTrip showHeader={false} />
           )}
         </main>
 
-        {/* Floating Action Button */}
-        <FloatingActionButton />
+        {/* Floating Action Button - Only show when there are trips */}
+        {trips.length > 0 && <FloatingActionButton />}
       </div>
     </div>
   );
