@@ -4,8 +4,8 @@ import { Users } from "lucide-react";
 export interface Trip {
   id: number;
   trip_name: string;
-  subtitle: string;
-  timestamp: string;
+  latest_message: string;
+  latest_message_at: string;
   avatarContent: React.ReactNode;
   // Additional trip details
   startDate?: string;
@@ -31,7 +31,7 @@ export interface Trip {
     };
     content?: string;
     timestamp: string;
-    data?: any;
+    data?: Record<string, unknown>;
   }>;
 }
 
@@ -39,8 +39,8 @@ export const trips: Trip[] = [
   {
     id: 1,
     trip_name: "Bali Squad ✈️",
-    subtitle: "Consensus reached on Nov 14-18. Generate...",
-    timestamp: "2m ago",
+    latest_message: "Consensus reached on Nov 14-18. Generate...",
+    latest_message_at: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
     avatarContent: React.createElement(Users, { className: "w-6 h-6 text-trip-avatar-foreground" }),
     startDate: "2024-11-14",
     endDate: "2024-11-18",
@@ -88,8 +88,8 @@ export const trips: Trip[] = [
   {
     id: 2,
     trip_name: "Europe Adventure",
-    subtitle: "Poll: Pick your preferred destination",
-    timestamp: "1h ago",
+    latest_message: "Poll: Pick your preferred destination",
+    latest_message_at: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
     avatarContent: React.createElement(Users, { className: "w-6 h-6 text-trip-avatar-foreground" }),
     startDate: "2024-12-15",
     endDate: "2024-12-22",
@@ -116,8 +116,8 @@ export const trips: Trip[] = [
   {
     id: 3,
     trip_name: "Tokyo Friends 🍜",
-    subtitle: "Budget discussion in progress",
-    timestamp: "3h ago",
+    latest_message: "Budget discussion in progress",
+    latest_message_at: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
     avatarContent: React.createElement(Users, { className: "w-6 h-6 text-trip-avatar-foreground" }),
     startDate: "2025-01-10",
     endDate: "2025-01-17",
@@ -143,8 +143,8 @@ export const trips: Trip[] = [
   {
     id: 4,
     trip_name: "Beach Vibes 🏖️",
-    subtitle: "Accommodation poll closing soon",
-    timestamp: "1d ago",
+    latest_message: "Accommodation poll closing soon",
+    latest_message_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
     avatarContent: React.createElement(Users, { className: "w-6 h-6 text-trip-avatar-foreground" }),
     startDate: "2025-02-14",
     endDate: "2025-02-21",
@@ -171,12 +171,12 @@ export const trips: Trip[] = [
 ];
 
 // Function to add a new trip
-export const addTrip = (newTrip: Omit<Trip, 'id' | 'avatarContent' | 'timestamp'>): Trip => {
+export const addTrip = (newTrip: Omit<Trip, 'id' | 'avatarContent' | 'latest_message_at'>): Trip => {
   const trip: Trip = {
     ...newTrip,
     id: Math.max(...trips.map(t => t.id), 0) + 1,
     avatarContent: React.createElement(Users, { className: "w-6 h-6 text-trip-avatar-foreground" }),
-    timestamp: "now",
+    latest_message_at: new Date().toISOString(),
     messages: [
       {
         id: "1",

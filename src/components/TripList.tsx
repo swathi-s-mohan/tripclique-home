@@ -6,6 +6,7 @@ interface TripListProps {
 }
 
 export const TripList = ({ trips }: TripListProps) => {
+  console.log({ trips });
   return (
     <div className="divide-y divide-border">
       {trips.map((trip) => (
@@ -13,8 +14,8 @@ export const TripList = ({ trips }: TripListProps) => {
           key={trip.id}
           tripId={trip.id}
           tripName={trip.trip_name}
-          subtitle={trip.subtitle}
-          timestamp={trip.timestamp}
+          latest_message={trip.latest_message}
+          latest_message_at={trip.latest_message_at}
           avatarContent={trip.avatarContent}
         />
       ))}
