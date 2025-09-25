@@ -77,3 +77,9 @@ export const login = async (userData: {
     body: userData,
   });
 };
+
+export const getChatsByTripId = async (tripId: string) => {
+  return apiRequest(`/chats/${tripId}`, {
+    method: 'GET',
+  });
+};
