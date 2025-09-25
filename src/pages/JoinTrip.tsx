@@ -71,12 +71,13 @@ const JoinTrip = () => {
         throw new Error('Trip ID missing in response');
       }
 
-      toast({
-        title: "Joined successfully",
-        description: `Opening trip...`,
-      });
+      const tripName =
+        (typeof resp === 'object' && resp)
+          ? (resp?.tripName || resp?.trip_name || resp?.name)
+          : undefined;
 
-      navigate(`/trip-chat/${encodeURIComponent(String(tripId))}`);
+      const query = tripName ? `?tripName=${encodeURIComponent(String(tripName))}` : '';
+      navigate(`/trip-chat/${encodeURIComponent(String(tripId))}${query}`);
     } catch (err) {
       console.error(err);
       setIsError(true);
