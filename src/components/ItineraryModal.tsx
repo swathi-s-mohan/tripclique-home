@@ -67,7 +67,12 @@ export const ItineraryModal = ({ isOpen, onClose }: ItineraryModalProps) => {
 
         {/* Scrollable Content */}
         <div className="overflow-y-auto flex-1">
-          <Accordion type="single" collapsible className="px-4 pb-6">
+          <Accordion
+            type="single"
+            collapsible
+            defaultValue={`day-${itineraryData[0].day}`}
+            className="px-4 pb-6"
+          >
             {itineraryData.map((day) => (
               <AccordionItem key={day.day} value={`day-${day.day}`} className="border-none">
                 <AccordionTrigger className="hover:no-underline py-4 px-2">
