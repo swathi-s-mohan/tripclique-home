@@ -34,7 +34,10 @@ const CreateJoinTrip = () => {
           {/* Action Cards */}
           <div className="space-y-4">
             {/* Create Trip Card */}
-            <div className="bg-card border border-border rounded-2xl p-6 hover:bg-trip-card-hover transition-colors cursor-pointer">
+            <div 
+              onClick={() => navigate('/create-trip')}
+              className="bg-card border border-border rounded-2xl p-6 hover:bg-trip-card-hover transition-colors cursor-pointer"
+            >
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4 flex-1">
                   <div className="w-12 h-12 bg-foreground rounded-full flex items-center justify-center flex-shrink-0">
