@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import CreateJoinTrip from "./pages/CreateJoinTrip";
 import CreateTrip from "./pages/CreateTrip";
+import TripChat from "./pages/TripChat";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,6 +21,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/create-join" element={<CreateJoinTrip />} />
           <Route path="/create-trip" element={<CreateTrip />} />
+          <Route path="/trip-chat" element={<TripChat />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

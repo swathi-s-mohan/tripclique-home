@@ -212,7 +212,10 @@ const CreateTrip = () => {
           
           {/* Create Button */}
           <div className="pt-6 pb-8">
-            <Button className="w-full h-14 text-base font-semibold rounded-2xl bg-foreground text-background hover:bg-foreground/90">
+            <Button 
+              onClick={() => navigate('/trip-chat')}
+              className="w-full h-14 text-base font-semibold rounded-2xl bg-foreground text-background hover:bg-foreground/90"
+            >
               Create & Open chat
             </Button>
           </div>
