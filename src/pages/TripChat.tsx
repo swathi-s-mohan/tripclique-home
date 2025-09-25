@@ -1,17 +1,60 @@
-import { ArrowLeft, Users, MoreVertical, Send, Sparkles } from "lucide-react";
+import { ArrowLeft, Users, MoreVertical, Send, Sparkles, Smile } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const TripChat = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([
+    {
+      id: 1,
+      text: "Welcome to Trip A! I'm here to help you plan the perfect group trip. Share your preferred dates, places, budget, preferences, and must-haves. I'll propose options for the group.",
+      sender: "AI Assistant",
+      timestamp: "2:30 PM",
+      isUser: false,
+      isAI: true
+    },
+    {
+      id: 2,
+      text: "Hey everyone! Super excited about this trip 🌴",
+      sender: "Alex",
+      timestamp: "2:35 PM",
+      isUser: false,
+      isAI: false
+    },
+    {
+      id: 3,
+      text: "Same here! I'm thinking somewhere tropical would be amazing",
+      sender: "Sarah",
+      timestamp: "2:36 PM",
+      isUser: false,
+      isAI: false
+    }
+  ]);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const handleSendMessage = () => {
     if (message.trim()) {
-      // Handle message sending logic here
+      const newMessage = {
+        id: messages.length + 1,
+        text: message,
+        sender: "You",
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        isUser: true,
+        isAI: false
+      };
+      setMessages(prev => [...prev, newMessage]);
       setMessage("");
     }
   };
@@ -71,52 +114,61 @@ const TripChat = () => {
 
           <TabsContent value="chat" className="flex flex-col flex-1 mt-0">
             {/* Chat Messages */}
-            <div className="flex-1 p-4 space-y-4 bg-muted/20">
-              {/* AI Welcome Message */}
-              <div className="flex space-x-3">
-                <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="w-5 h-5 text-primary-foreground" />
-                </div>
-                <div className="flex-1">
-                  <div className="bg-card rounded-2xl p-4 shadow-sm">
-                    <p className="text-sm text-foreground leading-relaxed">
-                      Welcome to Trip A! I'm here to help you plan the perfect group trip. Share your preferred dates, places, budget, preferences, and must-haves. I'll propose options for the group.
-                    </p>
+            <div className="flex-1 p-4 space-y-4 bg-muted/20 overflow-y-auto">
+              {messages.map((msg) => (
+                <div key={msg.id} className={`flex ${msg.isUser ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[85%] ${msg.isUser ? 'order-2' : 'order-1'}`}>
+                    {!msg.isUser && !msg.isAI && (
+                      <p className="text-xs text-muted-foreground mb-1 px-2">{msg.sender}</p>
+                    )}
+                    <div className={`rounded-2xl p-3 shadow-sm ${
+                      msg.isUser 
+                        ? 'bg-primary text-primary-foreground rounded-br-md' 
+                        : msg.isAI 
+                        ? 'bg-card text-foreground border border-border' 
+                        : 'bg-card text-foreground rounded-bl-md'
+                    }`}>
+                      <p className="text-sm leading-relaxed">{msg.text}</p>
+                      <p className={`text-xs mt-1 ${
+                        msg.isUser 
+                          ? 'text-primary-foreground/70' 
+                          : 'text-muted-foreground'
+                      }`}>
+                        {msg.timestamp}
+                      </p>
+                    </div>
                   </div>
+                  {msg.isAI && (
+                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0 mr-3 order-1">
+                      <Sparkles className="w-4 h-4 text-primary-foreground" />
+                    </div>
+                  )}
                 </div>
-              </div>
+              ))}
+              <div ref={messagesEndRef} />
             </div>
 
-            {/* Quick Actions */}
+            {/* Chat Input */}
             <div className="p-4 bg-background border-t border-border">
-              <div className="flex space-x-3 mb-4">
-                <Button variant="outline" size="sm" className="rounded-full">
-                  Bookings
-                </Button>
-                <Button variant="outline" size="sm" className="rounded-full">
-                  Itinerary
-                </Button>
-              </div>
-
-              {/* Message Input */}
               <div className="flex items-center space-x-2">
                 <div className="flex-1 relative">
                   <Input
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Hello"
+                    placeholder="Type a message..."
                     className="rounded-full bg-muted border-0 pr-12"
                     onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                   />
                   <button
                     onClick={handleSendMessage}
                     className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 hover:bg-accent rounded-full transition-colors"
+                    disabled={!message.trim()}
                   >
-                    <Send className="w-4 h-4 text-muted-foreground" />
+                    <Send className={`w-4 h-4 ${message.trim() ? 'text-primary' : 'text-muted-foreground'}`} />
                   </button>
                 </div>
                 <button className="p-2 hover:bg-accent rounded-full transition-colors">
-                  <Sparkles className="w-5 h-5 text-muted-foreground" />
+                  <Smile className="w-5 h-5 text-muted-foreground" />
                 </button>
               </div>
             </div>
