@@ -1,3 +1,3 @@
-const API_BASE_URL = 'https://candice-wersh-supergloriously.ngrok-free.dev';
+const API_BASE_URL = 'https://git-lost-be.onrender.com';
 
 export { API_BASE_URL };

@@ -42,7 +42,11 @@ export const TripCard = ({
         <div className="flex items-center justify-between mb-1">
           <h3 className="font-semibold text-foreground truncate">{tripName}</h3>
           <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-            <span className="text-sm text-timestamp">{getTimeAgo(latest_message_at)}</span>
+            {latest_message_at && (
+              <span className="text-sm text-timestamp">
+                {getTimeAgo(latest_message_at)}
+              </span>
+            )}
             <Button
               variant="ghost"
               size="sm"
@@ -52,7 +56,9 @@ export const TripCard = ({
             </Button>
           </div>
         </div>
-        <p className="text-sm text-muted-foreground truncate">{latest_message}</p>
+        <p className="text-sm text-muted-foreground truncate">
+          {latest_message}
+        </p>
       </div>
     </div>
   );
