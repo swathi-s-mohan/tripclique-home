@@ -1,16 +1,27 @@
 import { Users, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface TripCardProps {
+  tripId: number;
   tripName: string;
   subtitle: string;
   timestamp: string;
   avatarContent?: React.ReactNode;
 }
 
-export const TripCard = ({ tripName, subtitle, timestamp, avatarContent }: TripCardProps) => {
+export const TripCard = ({ tripId, tripName, subtitle, timestamp, avatarContent }: TripCardProps) => {
+  const navigate = useNavigate();
+
+  const handleTripClick = () => {
+    navigate(`/trip-chat/${tripId}`);
+  };
+
   return (
-    <div className="flex items-center gap-3 p-4 hover:bg-trip-card-hover transition-colors cursor-pointer">
+    <div 
+      className="flex items-center gap-3 p-4 hover:bg-trip-card-hover transition-colors cursor-pointer"
+      onClick={handleTripClick}
+    >
       {/* Avatar */}
       <div className="w-12 h-12 rounded-full bg-trip-avatar flex items-center justify-center flex-shrink-0">
         {avatarContent || <Users className="w-6 h-6 text-trip-avatar-foreground" />}

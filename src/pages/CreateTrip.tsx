@@ -5,11 +5,22 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { addTrip } from "@/data/trips";
 
 const CreateTrip = () => {
   const navigate = useNavigate();
   const [selectedPreferences, setSelectedPreferences] = useState<string[]>([]);
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    tripName: '',
+    startDate: '',
+    endDate: '',
+    preferredPlaces: '',
+    minBudget: '',
+    maxBudget: ''
+  });
 
   const travelPreferences = [
     { id: "beach", label: "Beach & Relax", icon: Waves },
@@ -41,6 +52,39 @@ const CreateTrip = () => {
     );
   };
 
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleCreateTrip = () => {
+    if (!formData.tripName.trim()) {
+      alert('Please enter a trip name');
+      return;
+    }
+
+    const newTrip = addTrip({
+      name: formData.tripName,
+      subtitle: "Trip created! Let's start planning together.",
+      startDate: formData.startDate,
+      endDate: formData.endDate,
+      destinations: formData.preferredPlaces ? [formData.preferredPlaces] : [],
+      minBudget: formData.minBudget,
+      maxBudget: formData.maxBudget,
+      preferences: selectedPreferences,
+      amenities: selectedAmenities,
+      members: [
+        { id: "1", name: "You" }
+      ],
+      status: "planning"
+    });
+
+    // Navigate to the trip chat with the new trip ID
+    navigate(`/trip-chat/${newTrip.id}`);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Mobile Container */}
@@ -70,7 +114,9 @@ const CreateTrip = () => {
                 </Label>
                 <Input
                   id="tripName"
-                  placeholder=""
+                  placeholder="Enter trip name"
+                  value={formData.tripName}
+                  onChange={(e) => handleInputChange('tripName', e.target.value)}
                   className="mt-2 h-12 rounded-xl border-border bg-background"
                 />
               </div>
@@ -86,10 +132,12 @@ const CreateTrip = () => {
                 <div className="relative mt-2">
                   <Input
                     id="startDate"
-                    placeholder="DD/MM/YYYY"
+                    type="date"
+                    value={formData.startDate}
+                    onChange={(e) => handleInputChange('startDate', e.target.value)}
                     className="h-12 rounded-xl border-border bg-background pr-12"
                   />
-                  <Calendar className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  {/* <Calendar className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" /> */}
                 </div>
               </div>
               <div>
@@ -97,10 +145,12 @@ const CreateTrip = () => {
                 <div className="relative mt-2">
                   <Input
                     id="endDate"
-                    placeholder="DD/MM/YYYY"
+                    type="date"
+                    value={formData.endDate}
+                    onChange={(e) => handleInputChange('endDate', e.target.value)}
                     className="h-12 rounded-xl border-border bg-background pr-12"
                   />
-                  <Calendar className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  {/* <Calendar className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" /> */}
                 </div>
               </div>
             </div>
@@ -114,7 +164,9 @@ const CreateTrip = () => {
             </div>
             <div className="relative">
               <Input
-                placeholder=""
+                placeholder="Enter destination"
+                value={formData.preferredPlaces}
+                onChange={(e) => handleInputChange('preferredPlaces', e.target.value)}
                 className="h-12 rounded-xl border-border bg-background pr-12"
               />
               <MapPin className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -129,7 +181,10 @@ const CreateTrip = () => {
                 <Label htmlFor="minBudget" className="text-sm text-muted-foreground">Min</Label>
                 <Input
                   id="minBudget"
-                  placeholder=""
+                  type="number"
+                  placeholder="Min amount"
+                  value={formData.minBudget}
+                  onChange={(e) => handleInputChange('minBudget', e.target.value)}
                   className="mt-2 h-12 rounded-xl border-border bg-background"
                 />
               </div>
@@ -137,7 +192,10 @@ const CreateTrip = () => {
                 <Label htmlFor="maxBudget" className="text-sm text-muted-foreground">Max</Label>
                 <Input
                   id="maxBudget"
-                  placeholder=""
+                  type="number"
+                  placeholder="Max amount"
+                  value={formData.maxBudget}
+                  onChange={(e) => handleInputChange('maxBudget', e.target.value)}
                   className="mt-2 h-12 rounded-xl border-border bg-background"
                 />
               </div>
@@ -213,7 +271,7 @@ const CreateTrip = () => {
           {/* Create Button */}
           <div className="pt-6 pb-8">
             <Button 
-              onClick={() => navigate('/trip-chat')}
+              onClick={handleCreateTrip}
               className="w-full h-14 text-base font-semibold rounded-2xl bg-foreground text-background hover:bg-foreground/90"
             >
               Create & Open chat
