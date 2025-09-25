@@ -553,7 +553,7 @@ const TripChat = () => {
                         <span className="text-xs text-muted-foreground">Just now</span>
                       </div>
                       <p className="text-sm bg-muted p-3 rounded-lg">
-                        Welcome to {tripName || "your trip"}! 🎉 I'm your AmiGO, your AI travel assistant. I'm here to help you plan the perfect trip. Discuss your preferences, ask about destinations, flights, hotels, or request your itinerary!
+                        Welcome to {tripName || "your trip"}! 🎉 I'm your amiGO, your AI travel assistant. I'm here to help you plan the perfect trip. Discuss your preferences, ask about destinations, flights, hotels, or request your itinerary!
                       </p>
                     </div>
                   </div>

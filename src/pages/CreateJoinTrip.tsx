@@ -18,7 +18,7 @@ const CreateJoinTrip = () => {
           >
             <ArrowLeft className="w-6 h-6 text-foreground" />
           </button>
-          <h1 className="text-2xl font-bold text-foreground">AmiGO</h1>
+          <h1 className="text-2xl font-bold text-foreground">amiGO</h1>
         </header>
         
         {/* Main Content */}

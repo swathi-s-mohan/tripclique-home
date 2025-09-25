@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
 import { signUp } from "@/utils/api";
 import { useToast } from "@/hooks/use-toast";
+import { Logo } from "@/components/Logo";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -74,12 +75,15 @@ const SignUp = () => {
         <div className="flex-1 px-6 py-8">
           {/* Logo */}
           <div className="text-center mb-12 mt-8">
-            <h1 className="text-3xl font-bold text-primary mb-2">AmiGO</h1>
+            <div className="flex justify-center mb-4">
+              <Logo size={80} />
+            </div>
+            <h1 className="text-3xl font-bold text-primary mb-2">amiGO</h1>
           </div>
 
           {/* Title */}
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-foreground mb-2">Create your AmiGO account</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-2">Create your amiGO account</h2>
           </div>
 
           {/* Form */}
