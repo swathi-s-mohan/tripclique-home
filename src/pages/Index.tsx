@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { TripList } from "@/components/TripList";
 import { FloatingActionButton } from "@/components/FloatingActionButton";
+import TripListShimmer from "@/components/TripListShimmer";
 import { User, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -12,7 +13,7 @@ import { useAuth } from "@/contexts/AuthContext";
 const Index = () => {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading: authLoading } = useAuth();
 
   const handleLogout = () => {
     console.log("Logging out...");
@@ -27,6 +28,11 @@ const Index = () => {
 
   useEffect(() => {
     const fetchTrips = async () => {
+      // Wait for auth loading to complete before checking authentication
+      if (authLoading) {
+        return;
+      }
+
       if (user?.username) {
         try {
           const tripData = await getTripsByUser(user.username);
@@ -43,7 +49,7 @@ const Index = () => {
       }
     };
     fetchTrips();
-  }, [user?.username]);
+  }, [user?.username, authLoading]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -94,10 +100,8 @@ const Index = () => {
 
         {/* Trip List */}
         <main className="pb-20">
-          {loading ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="text-muted-foreground">Loading trips...</div>
-            </div>
+          {loading || authLoading ? (
+            <TripListShimmer />
           ) : error ? (
             <div className="flex items-center justify-center py-8">
               <div className="text-destructive">Error: {error}</div>

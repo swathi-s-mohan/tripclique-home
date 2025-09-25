@@ -32,6 +32,7 @@ import { BookingsModal } from "@/components/BookingsModal";
 import { ItineraryModal } from "@/components/ItineraryModal";
 import { Consensus } from "@/types/consensus";
 import { DestinationCarousel } from "@/components/DestinationCarousal";
+import ChatShimmer from "@/components/ChatShimmer";
 
 const TripChat = () => {
   const { tripId } = useParams<{ tripId: string }>();
@@ -49,6 +50,7 @@ const TripChat = () => {
       consensus?: Consensus | null;
     }[]
   >();
+  const [isLoading, setIsLoading] = useState(true);
   const [newMessage, setNewMessage] = useState("");
   const [showOptionsPanel, setShowOptionsPanel] = useState(false);
   const [activeTab, setActiveTab] = useState<"chat" | "timeline">("chat");
@@ -82,8 +84,10 @@ const TripChat = () => {
       try {
         const response = await getChatsByTripId(tripId);
         setMessages(response);
+        setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch chats:", error);
+        setIsLoading(false);
       }
     };
 
@@ -436,6 +440,12 @@ const TripChat = () => {
   //   },
   // ];
 
+  // Show loading state while fetching data
+  if (isLoading) {
+    return <ChatShimmer />;
+  }
+
+  // Show empty state only after loading is completed
   if (!messages) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">

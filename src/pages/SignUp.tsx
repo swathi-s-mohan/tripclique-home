@@ -5,9 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
 import { signUp } from "@/utils/api";
+import { useToast } from "@/hooks/use-toast";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -19,7 +21,11 @@ const SignUp = () => {
     e.preventDefault();
     
     if (!formData.username.trim() || !formData.password.trim()) {
-      alert('Please fill in all fields');
+      toast({
+        title: "Validation Error",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -33,13 +39,20 @@ const SignUp = () => {
 
       console.log('Sign up successful:', response);
       
-      // Navigate to login or dashboard
-      alert('Account created successfully! Please login.');
+      // Show success message and navigate to login
+      toast({
+        title: "Success",
+        description: "Account created successfully! Please login.",
+      });
       navigate('/');
       
     } catch (error) {
       console.error('Sign up failed:', error);
-      alert('Failed to create account. Please try again.');
+      toast({
+        title: "Error",
+        description: "Failed to create account. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }

@@ -7,10 +7,12 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { createTrip } from "@/utils/api";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 const CreateTrip = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { toast } = useToast();
   const [selectedPreferences, setSelectedPreferences] = useState<string[]>([]);
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -64,7 +66,11 @@ const CreateTrip = () => {
 
   const handleCreateTrip = async () => {
     if (!formData.tripName.trim()) {
-      alert('Please enter a trip name');
+      toast({
+        title: "Validation Error",
+        description: "Please enter a trip name",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -131,7 +137,11 @@ const CreateTrip = () => {
       
     } catch (error) {
       console.error('Error creating trip:', error);
-      alert('Failed to create trip. Please try again.');
+      toast({
+        title: "Error",
+        description: "Failed to create trip. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
