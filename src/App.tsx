@@ -21,7 +21,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/create-join" element={<CreateJoinTrip />} />
           <Route path="/create-trip" element={<CreateTrip />} />
-          {/* <Route path="/trip-chat/:tripId" element={<TripChat />} /> */}
+           <Route path="/trip-chat/:tripId" element={<TripChat />} /> 
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
