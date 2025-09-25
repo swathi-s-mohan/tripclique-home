@@ -12,6 +12,7 @@ import CreateTrip from "./pages/CreateTrip";
 import JoinTrip from "./pages/JoinTrip";
 import TripChat from "./pages/TripChat";
 import NotFound from "./pages/NotFound";
+import ConsensusDemo from "./pages/ConsensusDemo";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/create-trip" element={<CreateTrip />} />
             <Route path="/join-trip" element={<JoinTrip />} />
              <Route path="/trip-chat/:tripId" element={<TripChat />} />
+             <Route path="/consensus-demo" element={<ConsensusDemo />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
