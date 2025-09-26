@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { X, Plane, Building2, Clock, MapPin, ChevronDown, Train } from "lucide-react";
 import { getItinerary } from "@/utils/api";
 
@@ -114,7 +115,7 @@ export const ItineraryModal = ({ isOpen, onClose }: ItineraryModalProps) => {
         </DialogHeader>
 
         {/* Scrollable Content */}
-        <div className="overflow-y-auto flex-1">
+        <ScrollArea className="flex-1 max-h-[calc(80vh-120px)]">
           {loading ? (
             <div className="px-4 py-8 text-center text-sm text-muted-foreground">Loading itinerary...</div>
           ) : (
@@ -187,9 +188,9 @@ export const ItineraryModal = ({ isOpen, onClose }: ItineraryModalProps) => {
                 </AccordionContent>
               </AccordionItem>
             ))}
-          </Accordion>
-          )}
-        </div>
+           </Accordion>
+           )}
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
