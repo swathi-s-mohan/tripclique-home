@@ -2,37 +2,31 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Star, ArrowRight } from 'lucide-react';
+import { Hotel } from '@/types/consensus';
 
-interface HotelCardProps {
-  imageUrl: string;
-  title: string;
-  dateRange: string;
-  description: string;
-  rating: number;
-  isTopRated?: boolean;
-  whyItMatches?: string[];
-  price: string;
-  ctaText: string;
-}
 
-export const HotelCard: React.FC<HotelCardProps> = ({
-  imageUrl,
-  title,
-  dateRange,
-  description,
+
+export const HotelCard: React.FC<Hotel> = ({
+  image,
+  name,
+  summary,
   rating,
-  isTopRated = false,
-  whyItMatches = [],
-  price,
-  ctaText
+  why_it_matches,
+  price_per_night,
+  amenities,
+  badges,
+  images,
+  location,
+  price_currency,
+  type,
 }) => {
   return (
     <div className="w-full bg-background rounded-2xl shadow-sm border border-border overflow-hidden">
       {/* Image Banner with Overlays */}
       <div className="relative w-full h-48 overflow-hidden">
         <img 
-          src={imageUrl} 
-          alt={title}
+          src={image} 
+          alt={name}
           className="w-full h-full object-cover"
         />
         
@@ -46,7 +40,7 @@ export const HotelCard: React.FC<HotelCardProps> = ({
         </div>
         
         {/* Top Rated Badge - Top Right */}
-        {isTopRated && (
+        {badges.includes("Great Value") && (
           <div className="absolute top-3 right-3">
             <Badge variant="secondary" className="bg-black text-white border-0">
               Top Rated
@@ -60,26 +54,26 @@ export const HotelCard: React.FC<HotelCardProps> = ({
         {/* Title and Date Range */}
         <div className="space-y-1">
           <h3 className="text-xl font-bold text-foreground">
-            {title}
+            {name}
           </h3>
           <p className="text-sm text-muted-foreground">
-            {dateRange}
+            {location}
           </p>
         </div>
         
         {/* Description */}
         <p className="text-sm text-muted-foreground leading-relaxed">
-          {description}
+          {summary}
         </p>
         
         {/* Why it matches - only show if tags provided */}
-        {whyItMatches.length > 0 && (
+        {why_it_matches.length > 0 && (
           <div className="space-y-2">
             <p className="text-sm font-medium text-muted-foreground">
               Why it matches:
             </p>
             <div className="flex flex-wrap gap-2">
-              {whyItMatches.map((tag, index) => (
+              {why_it_matches.map((tag, index) => (
                 <span
                   key={index}
                   className="px-3 py-1 bg-primary/10 text-primary text-sm font-medium rounded-full border border-primary/20"
@@ -94,10 +88,10 @@ export const HotelCard: React.FC<HotelCardProps> = ({
         {/* Price and CTA */}
         <div className="space-y-3 pt-2">
           <div className="text-xl font-bold text-foreground text-center">
-            {price}
+            {price_per_night}
           </div>
           <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-xl px-8 py-3 gap-2 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
-            {ctaText}
+            Book Now
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
