@@ -1,5 +1,6 @@
 import { ArrowLeft, Plus, UserPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import amigoLogo from "@/assets/amigo-logo.png";
 
 const CreateJoinTrip = ({ showHeader = true }: { showHeader?: boolean }) => {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ const CreateJoinTrip = ({ showHeader = true }: { showHeader?: boolean }) => {
           >
             <ArrowLeft className="w-6 h-6 text-foreground" />
           </button>
-          <h1 className="text-2xl font-bold text-foreground">amiGO</h1>
+          <img src={amigoLogo} alt="amiGo" className="h-8 w-auto" />
         </header>
         )}
         

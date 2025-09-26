@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { login } from "@/utils/api";
 import { useAuth } from "@/contexts/AuthContext";
-import { Logo } from "@/components/Logo";
+import amigoLogo from "@/assets/amigo-logo.png";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -80,7 +80,7 @@ const Login = () => {
           {/* Logo */}
           <div className="text-center mb-12 mt-8">
             <div className="flex justify-center mb-4">
-              <Logo size={80} />
+              <img src={amigoLogo} alt="amiGo" className="h-20 w-auto" />
             </div>
           </div>
 

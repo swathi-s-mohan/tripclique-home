@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { API_BASE_URL } from "@/constants";
 import { Trip } from "@/data/trips";
 import { getTripsByUser } from "@/utils/api";
+import amigoLogo from "@/assets/amigo-logo.png";
 import { useAuth } from "@/contexts/AuthContext";
 import CreateJoinTrip from "./CreateJoinTrip";
 
@@ -58,7 +59,7 @@ const  Index = () => {
       <div className="max-w-[390px] mx-auto min-h-screen bg-background">
         {/* Header */}
         <header className="px-6 py-6 border-b border-border flex items-center justify-between relative">
-          <h1 className="text-2xl font-bold text-foreground">amiGO</h1>
+          <img src={amigoLogo} alt="amiGo" className="h-8 w-auto" />
 
           {/* Profile Button */}
           <div className="relative">
