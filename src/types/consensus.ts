@@ -59,6 +59,7 @@ export interface Hotel {
   summary: string;
   type: 'Hotel';
   why_it_matches: string[];
+  travellers?: number;
 }
 
 export interface Flight {
@@ -77,4 +78,5 @@ export interface Flight {
   price_strike: string;
   stops: number;
   stops_text: string;
+  travellers?: number;
 }

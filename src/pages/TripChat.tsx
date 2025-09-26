@@ -216,7 +216,7 @@ const TripChat = () => {
 
     const isCurrentUser = message.username === user?.username;
 
-    // if (showHotel) {
+    // if (true) {
     //   return (
     //     <div key={message.id} className="mb-4">
     //       <div className="flex gap-3 mb-2">
@@ -239,7 +239,7 @@ const TripChat = () => {
     //       </div>
     //       <div className="ml-11">
     //         <div className="bg-white border border-gray-200 rounded-2xl p-4">
-    //           <HotelCarousel hotels={hotels} />
+    //           <HotelCarousel hotels={hotels} travellers={members?.length ?? 0}/>
     //         </div>
     //       </div>
     //     </div>
@@ -269,7 +269,10 @@ const TripChat = () => {
     //       </div>
     //       <div className="ml-11">
     //         <div className="bg-white border border-gray-200 rounded-2xl p-4">
-    //           <FlightCarousel flights={flights} />
+    //           <FlightCarousel
+    //             flights={flights}
+    //             travellers={members?.length ?? 0}
+    //           />
     //         </div>
     //       </div>
     //     </div>

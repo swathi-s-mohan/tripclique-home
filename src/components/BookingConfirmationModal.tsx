@@ -1,4 +1,9 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { X, Check } from "lucide-react";
 import { useEffect } from "react";
@@ -11,14 +16,13 @@ interface BookingConfirmationModalProps {
   autoCloseDelay?: number; // in milliseconds, default 5000
 }
 
-export const BookingConfirmationModal = ({ 
-  isOpen, 
-  onClose, 
-  bookingReference, 
+export const BookingConfirmationModal = ({
+  isOpen,
+  onClose,
+  bookingReference,
   bookingType,
-  autoCloseDelay = 5000 
+  autoCloseDelay = 5000,
 }: BookingConfirmationModalProps) => {
-  
   useEffect(() => {
     if (isOpen && autoCloseDelay > 0) {
       const timer = setTimeout(() => {
@@ -38,15 +42,9 @@ export const BookingConfirmationModal = ({
       <DialogContent className="max-w-[390px] p-0 rounded-xl">
         {/* Header */}
         <DialogHeader className="flex flex-row items-center justify-between p-6 pb-4">
-          <DialogTitle className="text-xl font-bold">Booking Confirmed</DialogTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            className="h-6 w-6 rounded-sm opacity-70 hover:opacity-100"
-          >
-            <X className="h-4 w-4" />
-          </Button>
+          <DialogTitle className="text-xl font-bold">
+            Booking Confirmed
+          </DialogTitle>
         </DialogHeader>
 
         <div className="px-6 pb-8 space-y-8">
@@ -63,8 +61,8 @@ export const BookingConfirmationModal = ({
                 Booking Confirmed!
               </h2>
               <p className="text-muted-foreground text-base leading-relaxed max-w-[280px]">
-                Your {getBookingTypeText()} booking has been confirmed. You'll receive a 
-                confirmation email with all the details.
+                Your {getBookingTypeText()} booking has been confirmed. You'll
+                receive a confirmation email with all the details.
               </p>
             </div>
           </div>

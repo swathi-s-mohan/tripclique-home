@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Flight } from "@/types/consensus";
+import { BookingDetailsModal } from "./BookingDetailsModal";
 
 export const FlightCard: React.FC<Flight> = ({
   departure_time,
@@ -18,7 +19,22 @@ export const FlightCard: React.FC<Flight> = ({
   price_strike,
   stops,
   stops_text,
+  travellers,
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleChoose = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleProceedToPayment = () => {
+    console.log("Proceeding to payment for flight:", flight_code);
+    setIsModalOpen(false);
+  };
   return (
     <div className="w-full bg-background rounded-2xl shadow-sm border border-border p-4 space-y-4">
       {/* Flight Route Section */}
@@ -80,7 +96,10 @@ export const FlightCard: React.FC<Flight> = ({
             </div>
           )}
         </div>
-        <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl px-8 py-3 gap-2 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+        <Button 
+          onClick={handleChoose}
+          className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl px-8 py-3 gap-2 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+        >
           Choose
           <ArrowRight
             size={18}
@@ -88,6 +107,31 @@ export const FlightCard: React.FC<Flight> = ({
           />
         </Button>
       </div>
+
+      {/* Booking Details Modal */}
+      <BookingDetailsModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        booking={{
+          departure_time,
+          origin_code,
+          origin_city,
+          arrival_time,
+          dest_code,
+          dest_city,
+          duration,
+          airline,
+          flight_code,
+          cabin,
+          price_current,
+          price_strike,
+          stops,
+          stops_text,
+        } as Flight}
+        onProceedToPayment={handleProceedToPayment}
+        type="flight"
+        travellers={travellers}
+      />
     </div>
   );
 };

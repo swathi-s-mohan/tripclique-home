@@ -1,10 +1,9 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Star, ArrowRight } from 'lucide-react';
-import { Hotel } from '@/types/consensus';
-
-
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Star, ArrowRight } from "lucide-react";
+import { Hotel } from "@/types/consensus";
+import { BookingDetailsModal } from "./BookingDetailsModal";
 
 export const HotelCard: React.FC<Hotel> = ({
   image,
@@ -19,17 +18,29 @@ export const HotelCard: React.FC<Hotel> = ({
   location,
   price_currency,
   type,
+  travellers,
 }) => {
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+
+  const handleBookNow = () => {
+    setIsBookingModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsBookingModalOpen(false);
+  };
+
+  const handleProceedToPayment = () => {
+    setIsBookingModalOpen(false);
+    // Add payment logic here
+    console.log("Proceeding to payment for hotel:", name);
+  };
   return (
     <div className="w-full bg-background rounded-2xl shadow-sm border border-border overflow-hidden">
       {/* Image Banner with Overlays */}
       <div className="relative w-full h-48 overflow-hidden">
-        <img 
-          src={image} 
-          alt={name}
-          className="w-full h-full object-cover"
-        />
-        
+        <img src={image} alt={name} className="w-full h-full object-cover" />
+
         {/* Rating Overlay - Top Left */}
         <div className="absolute top-3 left-3 flex items-center gap-1 bg-black/70 text-white px-2 py-1 rounded-lg">
           <span className="text-sm font-medium">Rating</span>
@@ -38,7 +49,7 @@ export const HotelCard: React.FC<Hotel> = ({
             <Star size={14} fill="currentColor" className="text-yellow-400" />
           </div>
         </div>
-        
+
         {/* Top Rated Badge - Top Right */}
         {badges.includes("Great Value") && (
           <div className="absolute top-3 right-3">
@@ -48,24 +59,20 @@ export const HotelCard: React.FC<Hotel> = ({
           </div>
         )}
       </div>
-      
+
       {/* Content */}
       <div className="p-4 space-y-4">
         {/* Title and Date Range */}
         <div className="space-y-1">
-          <h3 className="text-xl font-bold text-foreground">
-            {name}
-          </h3>
-          <p className="text-sm text-muted-foreground">
-            {location}
-          </p>
+          <h3 className="text-xl font-bold text-foreground">{name}</h3>
+          <p className="text-sm text-muted-foreground">{location}</p>
         </div>
-        
+
         {/* Description */}
         <p className="text-sm text-muted-foreground leading-relaxed">
           {summary}
         </p>
-        
+
         {/* Why it matches - only show if tags provided */}
         {why_it_matches.length > 0 && (
           <div className="space-y-2">
@@ -84,18 +91,47 @@ export const HotelCard: React.FC<Hotel> = ({
             </div>
           </div>
         )}
-        
+
         {/* Price and CTA */}
         <div className="space-y-3 pt-2">
           <div className="text-xl font-bold text-foreground text-center">
             {price_per_night}
           </div>
-          <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-xl px-8 py-3 gap-2 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+          <Button
+            onClick={handleBookNow}
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-xl px-8 py-3 gap-2 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+          >
             Book Now
-            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            <ArrowRight
+              size={18}
+              className="group-hover:translate-x-1 transition-transform"
+            />
           </Button>
         </div>
       </div>
+
+      {/* Booking Details Modal */}
+      <BookingDetailsModal
+        isOpen={isBookingModalOpen}
+        onClose={handleCloseModal}
+        booking={{
+          image,
+          name,
+          summary,
+          rating,
+          why_it_matches,
+          price_per_night,
+          amenities,
+          badges,
+          images,
+          location,
+          price_currency,
+          type,
+        }}
+        onProceedToPayment={handleProceedToPayment}
+        type="hotel"
+        travellers={travellers}
+      />
     </div>
   );
 };

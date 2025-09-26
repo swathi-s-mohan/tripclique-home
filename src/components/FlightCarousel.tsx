@@ -6,9 +6,10 @@ import { Flight } from '@/types/consensus';
 
 interface FlightCarouselProps {
   flights: Flight[];
+  travellers: number;
 }
 
-export const FlightCarousel: React.FC<FlightCarouselProps> = ({ flights }) => {
+export const FlightCarousel: React.FC<FlightCarouselProps> = ({ flights, travellers }) => {
   return (
     <div className="w-full">
       <Carousel 
@@ -20,6 +21,7 @@ export const FlightCarousel: React.FC<FlightCarouselProps> = ({ flights }) => {
           <FlightCard 
             key={index}
             {...flight}
+            travellers={travellers}
           />
         ))}
       </Carousel>

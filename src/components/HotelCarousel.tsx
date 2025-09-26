@@ -5,14 +5,15 @@ import { Hotel } from "@/types/consensus";
 
 interface HotelCarouselProps {
   hotels: Hotel[];
+  travellers: number;
 }
 
-export const HotelCarousel: React.FC<HotelCarouselProps> = ({ hotels }) => {
+export const HotelCarousel: React.FC<HotelCarouselProps> = ({ hotels, travellers }) => {
   return (
     <div className="w-full">
       <Carousel showDots={true} loop={false} className="w-full">
         {(hotels || [])?.map((hotel, index) => (
-          <HotelCard key={index} {...hotel} />
+          <HotelCard key={index} {...hotel} travellers={travellers} />
         ))}
       </Carousel>
     </div>
