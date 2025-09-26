@@ -291,7 +291,7 @@ const TripChat = () => {
           key={message.id}
           className="flex justify-end gap-3 mb-4 items-center"
         >
-          <div className="flex-1 max-w-[60%]">
+          <div className="flex-1 max-w-[60%] flex flex-col items-end">
             <div className="flex justify-end items-center gap-2 mb-1">
               <span className="text-xs text-muted-foreground">
                 {new Date(message.time).toLocaleTimeString([], {
@@ -299,9 +299,8 @@ const TripChat = () => {
                   minute: "2-digit",
                 })}
               </span>
-              <span className="text-sm font-medium">{message.username}</span>
             </div>
-            <p className="text-sm bg-muted p-3 rounded-lg">{message.message}</p>
+            <p className="text-sm bg-muted p-3 rounded-lg inline-block max-w-full">{message.message}</p>
           </div>
           <div className="w-8 h-8 bg-gray-200 text-primary-foreground rounded-full flex items-center justify-center">
             <span className="text-sm font-medium text-gray-700">
@@ -444,7 +443,7 @@ const TripChat = () => {
               })}
             </span>
           </div>
-          <p className="text-sm bg-muted p-3 rounded-lg">{message.message}</p>
+          <p className="text-sm bg-muted p-3 rounded-lg inline-block max-w-full">{message.message}</p>
         </div>
       </div>
     );
@@ -724,7 +723,7 @@ const TripChat = () => {
                           Just now
                         </span>
                       </div>
-                      <p className="text-sm bg-gradient-to-r from-purple-50 to-blue-50 p-3 rounded-lg whitespace-pre-line">
+                      <p className="text-sm bg-gradient-to-r from-purple-50 to-blue-50 p-3 rounded-lg whitespace-pre-line inline-block max-w-full">
                         Welcome to {tripName || "your trip"}! 🎉 I'm amiGo, your AI travel assistant. I'm here to help you plan the perfect trip. Discuss your preferences, ask about destinations, flights, hotels, or request your itinerary!
                       </p>
                     </div>

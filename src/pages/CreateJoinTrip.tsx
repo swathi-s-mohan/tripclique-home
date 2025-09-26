@@ -1,6 +1,6 @@
 import { ArrowLeft, Plus, UserPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import amigoLogo from "@/assets/logo-amigo.png";
+import amigoLogo from "@/assets/amigo-logo.svg";
 
 const CreateJoinTrip = ({ showHeader = true }: { showHeader?: boolean }) => {
   const navigate = useNavigate();
@@ -13,12 +13,12 @@ const CreateJoinTrip = ({ showHeader = true }: { showHeader?: boolean }) => {
         {showHeader && (
           <header className="px-6 py-6 border-b border-border flex items-center">
           <button 
-            onClick={() => navigate('/')}
-            className="mr-4 p-1 hover:bg-accent rounded-md transition-colors"
+            onClick={() => navigate('/profile')}
+            className="mr-4 p-1 hover:bg-transparent rounded-md transition-colors"
           >
-            <ArrowLeft className="w-6 h-6 text-foreground" />
+            <ArrowLeft className="w-5 h-5 text-foreground" />
           </button>
-          <img src={amigoLogo} alt="amiGo" className="h-14 w-auto" />
+          <img src={amigoLogo} alt="amiGo" className="h-7 w-auto" />
         </header>
         )}
         
@@ -51,7 +51,6 @@ const CreateJoinTrip = ({ showHeader = true }: { showHeader?: boolean }) => {
                     </p>
                   </div>
                 </div>
-                <div className="w-6 h-6 border-2 border-border rounded-full flex-shrink-0"></div>
               </div>
             </div>
             
@@ -72,7 +71,6 @@ const CreateJoinTrip = ({ showHeader = true }: { showHeader?: boolean }) => {
                     </p>
                   </div>
                 </div>
-                <div className="w-6 h-6 border-2 border-border rounded-full flex-shrink-0"></div>
               </div>
             </div>
           </div>

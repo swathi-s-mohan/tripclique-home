@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
 import { signUp } from "@/utils/api";
 import { useToast } from "@/hooks/use-toast";
-import amigoLogo from "@/assets/logo-amigo.png";
+import amigoLogo from "@/assets/amigo-logo.svg";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -76,7 +76,7 @@ const SignUp = () => {
           {/* Logo */}
           <div className="text-center mb-12 mt-8">
             <div className="flex justify-center mb-4">
-              <img src={amigoLogo} alt="amiGo" className="h-24 w-auto" />
+              <img src={amigoLogo} alt="amiGo" className="h-18 w-auto" />
             </div>
           </div>
 

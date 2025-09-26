@@ -208,7 +208,7 @@ export const TripChatItem: React.FC<TripChatItemProps> = ({ trip }) => {
               <span className="text-sm font-medium">{message.sender?.name}</span>
               <span className="text-xs text-muted-foreground">{message.timestamp}</span>
             </div>
-            <p className="text-sm bg-muted p-3 rounded-lg">{message.content}</p>
+            <p className="text-sm bg-muted p-3 rounded-lg inline-block max-w-full">{message.content}</p>
           </div>
         </div>
       );
@@ -225,7 +225,7 @@ export const TripChatItem: React.FC<TripChatItemProps> = ({ trip }) => {
               <span className="text-sm font-medium">AI Assistant</span>
               <span className="text-xs text-muted-foreground">{message.timestamp}</span>
             </div>
-            <p className="text-sm bg-gradient-to-r from-purple-50 to-blue-50 p-3 rounded-lg whitespace-pre-line">{message.content}</p>
+            <p className="text-sm bg-gradient-to-r from-purple-50 to-blue-50 p-3 rounded-lg whitespace-pre-line inline-block max-w-full">{message.content}</p>
           </div>
         </div>
       );

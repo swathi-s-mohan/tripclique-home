@@ -147,9 +147,9 @@ const CreateTrip = () => {
         <header className="px-6 py-6 border-b border-border flex items-center">
           <button 
             onClick={() => navigate('/create-join')}
-            className="mr-4 p-1 hover:bg-accent rounded-md transition-colors"
+            className="mr-4 p-1 hover:bg-transparent rounded-md transition-colors"
           >
-            <ArrowLeft className="w-6 h-6 text-foreground" />
+            <ArrowLeft className="w-5 h-5 text-foreground" />
           </button>
           <h1 className="text-xl font-semibold text-foreground">Create trip</h1>
         </header>

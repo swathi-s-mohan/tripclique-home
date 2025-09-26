@@ -101,7 +101,7 @@ const JoinTrip = () => {
           variant="ghost"
           size="icon"
           onClick={() => navigate("/profile")}
-          className="shrink-0"
+          className="shrink-0 hover:bg-transparent"
         >
           <ArrowLeft className="h-5 w-5" />
         </Button>
