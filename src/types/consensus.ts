@@ -45,3 +45,38 @@ export interface Consensus {
 export type BudgetRange = 'budget' | 'mid-range' | 'luxury';
 
 export type ConsensusStatus = 'multiple_candidates' | 'single_candidate' | 'no_candidates' | 'consensus_reached';
+
+export interface Hotel {
+  amenities: string[];
+  badges: string[];
+  image: string;
+  images: string[];
+  location: string;
+  name: string;
+  price_currency: string;
+  price_per_night: string;
+  rating: number;
+  summary: string;
+  type: 'Hotel';
+  why_it_matches: string[];
+  travellers?: number;
+}
+
+export interface Flight {
+  airline: string;
+  arrival_time: string;
+  cabin: string;
+  date: string;
+  departure_time: string;
+  dest_city: string;
+  dest_code: string;
+  duration: string;
+  flight_code: string;
+  origin_city: string;
+  origin_code: string;
+  price_current: string;
+  price_strike: string;
+  stops: number;
+  stops_text: string;
+  travellers?: number;
+}

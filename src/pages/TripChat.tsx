@@ -1,6 +1,13 @@
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { getTripById } from "@/data/trips";
-import { getChatsByTripId, sendAiAnalysis, sendChatMessage } from "@/utils/api";
+import {
+  getChatsByTripId,
+  getFlights,
+  getHotels,
+  getMembers,
+  sendAiAnalysis,
+  sendChatMessage,
+} from "@/utils/api";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   ArrowLeft,
@@ -30,10 +37,12 @@ import { useState, useEffect, useRef } from "react";
 import { DropdownMenu } from "@/components/DropdownMenu";
 import { BookingsModal } from "@/components/BookingsModal";
 import { ItineraryModal } from "@/components/ItineraryModal";
-import { Consensus } from "@/types/consensus";
+import { Consensus, Hotel } from "@/types/consensus";
 import { DestinationCarousel } from "@/components/DestinationCarousal";
-import { ConsensusReached } from "@/components/ConsensusReached";
 import ChatShimmer from "@/components/ChatShimmer";
+import { HotelCarousel } from "@/components/HotelCarousel";
+import { FlightCarousel } from "@/components/FlightCarousel";
+import { ConsensusReached } from "@/components/ConsensusReached";
 
 const TripChat = () => {
   const { tripId } = useParams<{ tripId: string }>();
@@ -63,12 +72,48 @@ const TripChat = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const lastMessageCountRef = useRef(0);
 
+  const [members, setMembers] = useState<string[]>([]);
+  const [hotels, setHotels] = useState<Hotel[]>([]);
+  const [flights, setFlights] = useState<[]>([]);
+
+  useEffect(() => {
+    const fetchMembers = async () => {
+      if (!tripId) return;
+      const membersData = await getMembers(tripId);
+
+      setMembers(membersData.members);
+    };
+    fetchMembers();
+  }, [tripId]);
+
+  useEffect(() => {
+    const fetchFlights = async () => {
+      if (!tripId) return;
+      const flights = await getFlights();
+
+      console.log({ hotels });
+      setFlights(flights.flights);
+    };
+    fetchFlights();
+  }, [tripId]);
+
+  useEffect(() => {
+    const fetchHotels = async () => {
+      if (!tripId) return;
+      const hotels = await getHotels();
+
+      console.log({ hotels });
+      setHotels(hotels.hotels);
+    };
+    fetchHotels();
+  }, [tripId]);
+
   useEffect(() => {
     if (!messages) return;
-    
+
     const currentMessageCount = messages.length;
     const lastMessageCount = lastMessageCountRef.current;
-    
+
     // Scroll to end if:
     // 1. New messages were added (not just polling updates)
     // 2. This is the initial load (lastMessageCount is 0)
@@ -78,7 +123,7 @@ const TripChat = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);
     }
-    
+
     // Update the last message count
     lastMessageCountRef.current = currentMessageCount;
   }, [messages]);
@@ -132,7 +177,7 @@ const TripChat = () => {
       // Add message to local state for immediate UI update
       setMessages([...messages, messageData]);
       setNewMessage("");
-      
+
       // Force scroll to bottom when sending a message
       setTimeout(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -168,8 +213,71 @@ const TripChat = () => {
     const hasConsensusCard = message.consensus?.consensus_card !== undefined;
     // const isFlight = message.type === "flight";
     // const isHotel = message.type === "hotel";
-    
+
     const isCurrentUser = message.username === user?.username;
+
+    // if (true) {
+    //   return (
+    //     <div key={message.id} className="mb-4">
+    //       <div className="flex gap-3 mb-2">
+    //         <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+    //           <Building2 className="w-4 h-4 text-white" />
+    //         </div>
+    //         <div className="flex-1">
+    //           <div className="flex items-center gap-2">
+    //             <span className="text-sm font-medium">
+    //               Hotel Recommendations
+    //             </span>
+    //             <span className="text-xs text-muted-foreground">
+    //               {new Date(message.time).toLocaleTimeString([], {
+    //                 hour: "2-digit",
+    //                 minute: "2-digit",
+    //               })}
+    //             </span>
+    //           </div>
+    //         </div>
+    //       </div>
+    //       <div className="ml-11">
+    //         <div className="bg-white border border-gray-200 rounded-2xl p-4">
+    //           <HotelCarousel hotels={hotels} travellers={members?.length ?? 0}/>
+    //         </div>
+    //       </div>
+    //     </div>
+    //   );
+    // }
+
+    // if (true) {
+    //   return (
+    //     <div key={message.id} className="mb-4">
+    //       <div className="flex gap-3 mb-2">
+    //         <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-green-500 rounded-full flex items-center justify-center">
+    //           <Plane className="w-4 h-4 text-white" />
+    //         </div>
+    //         <div className="flex-1">
+    //           <div className="flex items-center gap-2">
+    //             <span className="text-sm font-medium">
+    //               Flight Recommendations
+    //             </span>
+    //             <span className="text-xs text-muted-foreground">
+    //               {new Date(message.time).toLocaleTimeString([], {
+    //                 hour: "2-digit",
+    //                 minute: "2-digit",
+    //               })}
+    //             </span>
+    //           </div>
+    //         </div>
+    //       </div>
+    //       <div className="ml-11">
+    //         <div className="bg-white border border-gray-200 rounded-2xl p-4">
+    //           <FlightCarousel
+    //             flights={flights}
+    //             travellers={members?.length ?? 0}
+    //           />
+    //         </div>
+    //       </div>
+    //     </div>
+    //   );
+    // }
 
     if (isCurrentUser) {
       // Right-aligned message for current user
@@ -210,9 +318,7 @@ const TripChat = () => {
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium">
-                    Consensus Reached
-                  </span>
+                  <span className="text-sm font-medium">Consensus Reached</span>
                   <span className="text-xs text-muted-foreground">
                     {new Date(message.time).toLocaleTimeString([], {
                       hour: "2-digit",
@@ -225,27 +331,48 @@ const TripChat = () => {
             <div className="ml-11">
               <ConsensusReached
                 data={{
-                  tripTitle: `${message.consensus?.consensus_card.places[0]?.place || 'Trip'} - ${message.consensus?.consensus_card.no_of_days} days`,
+                  tripTitle: `${
+                    message.consensus?.consensus_card.places[0]?.place || "Trip"
+                  } - ${message.consensus?.consensus_card.no_of_days} days`,
                   dates: {
-                    from: new Date(message.consensus?.consensus_card.date || '').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-                    to: new Date(new Date(message.consensus?.consensus_card.date || '').getTime() + (message.consensus?.consensus_card.no_of_days || 0) * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-                    duration: `${message.consensus?.consensus_card.no_of_days || 0} days`,
-                    range: message.consensus?.consensus_card.weekdays_range || ''
+                    from: new Date('Oct 01, 2025').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                    to: new Date('Oct 03, 2025').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                    duration: `${3} days`,
+                    range: 'Friday to Sunday'
                   },
-                  experiences: message.consensus?.consensus_card.places.map(place => ({
-                    title: place.place,
-                    description: place.features || 'Amazing destination experience',
-                    tags: place.keywords || ['Travel', 'Adventure'],
-                    thumbnail: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=100&h=100&fit=crop&crop=center'
-                  })) || [],
+                  experiences:
+                    message.consensus?.consensus_card.places.map((place) => ({
+                      title: place.place,
+                      description:
+                        place.features || "Amazing destination experience",
+                      tags: place.keywords || ["Travel", "Adventure"],
+                      thumbnail:
+                        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=100&h=100&fit=crop&crop=center",
+                    })) || [],
                   costEstimate: {
-                    perPerson: `$${((message.consensus?.consensus_card.flight_cost_per_person || 0) + (message.consensus?.consensus_card.accommodation_cost_per_person || 0) + (message.consensus?.consensus_card.transportation_cost_per_person || 0)).toLocaleString()}`,
+                    perPerson: `$${(
+                      (message.consensus?.consensus_card
+                        .flight_cost_per_person || 0) +
+                      (message.consensus?.consensus_card
+                        .accommodation_cost_per_person || 0) +
+                      (message.consensus?.consensus_card
+                        .transportation_cost_per_person || 0)
+                    ).toLocaleString()}`,
                     breakdown: {
-                      flight: `$${(message.consensus?.consensus_card.flight_cost_per_person || 0).toLocaleString()}`,
-                      stay: `$${(message.consensus?.consensus_card.accommodation_cost_per_person || 0).toLocaleString()}`,
-                      localTransport: `$${(message.consensus?.consensus_card.transportation_cost_per_person || 0).toLocaleString()}`
-                    }
-                  }
+                      flight: `$${(
+                        message.consensus?.consensus_card
+                          .flight_cost_per_person || 0
+                      ).toLocaleString()}`,
+                      stay: `$${(
+                        message.consensus?.consensus_card
+                          .accommodation_cost_per_person || 0
+                      ).toLocaleString()}`,
+                      localTransport: `$${(
+                        message.consensus?.consensus_card
+                          .transportation_cost_per_person || 0
+                      ).toLocaleString()}`,
+                    },
+                  },
                 }}
                 onStartBooking={() => setShowBookingsModal(true)}
                 onKeepDiscussing={() => {}}
@@ -255,37 +382,6 @@ const TripChat = () => {
           </div>
         );
       }
-      
-      // Show DestinationCarousel for regular destination recommendations
-      return (
-        <div key={message.id} className="mb-4">
-          <div className="flex gap-3 mb-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-green-500 rounded-full flex items-center justify-center">
-              <MapIcon className="w-4 h-4 text-white" />
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium">
-                  Destination Recommendations
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {new Date(message.time).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="ml-11">
-            <div className="bg-white border border-gray-200 rounded-2xl p-4">
-              <DestinationCarousel
-                destinations={message.consensus?.candidates}
-              />
-            </div>
-          </div>
-        </div>
-      );
     }
 
     // Left-aligned message for other users
@@ -327,60 +423,6 @@ const TripChat = () => {
     //         <p className="text-sm bg-gradient-to-r from-purple-50 to-blue-50 p-3 rounded-lg whitespace-pre-line">
     //           {message.content}
     //         </p>
-    //       </div>
-    //     </div>
-    //   );
-    // }
-
-    // if (isFlight && message.flightData) {
-    //   return (
-    //     <div key={message.id} className="mb-4">
-    //       <div className="flex gap-3 mb-2">
-    //         <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-green-500 rounded-full flex items-center justify-center">
-    //           <Plane className="w-4 h-4 text-white" />
-    //         </div>
-    //         <div className="flex-1">
-    //           <div className="flex items-center gap-2">
-    //             <span className="text-sm font-medium">
-    //               Flight Recommendations
-    //             </span>
-    //             <span className="text-xs text-muted-foreground">
-    //               {message.timestamp}
-    //             </span>
-    //           </div>
-    //         </div>
-    //       </div>
-    //       <div className="ml-11">
-    //         <div className="bg-white border border-gray-200 rounded-2xl p-4">
-    //           <FlightCarousel flights={message.flightData} />
-    //         </div>
-    //       </div>
-    //     </div>
-    //   );
-    // }
-
-    // if (isHotel && message.hotelData) {
-    //   return (
-    //     <div key={message.id} className="mb-4">
-    //       <div className="flex gap-3 mb-2">
-    //         <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-    //           <Building2 className="w-4 h-4 text-white" />
-    //         </div>
-    //         <div className="flex-1">
-    //           <div className="flex items-center gap-2">
-    //             <span className="text-sm font-medium">
-    //               Hotel Recommendations
-    //             </span>
-    //             <span className="text-xs text-muted-foreground">
-    //               {message.timestamp}
-    //             </span>
-    //           </div>
-    //         </div>
-    //       </div>
-    //       <div className="ml-11">
-    //         <div className="bg-white border border-gray-200 rounded-2xl p-4">
-    //           <HotelCarousel hotels={message.hotelData} />
-    //         </div>
     //       </div>
     //     </div>
     //   );
@@ -550,9 +592,11 @@ const TripChat = () => {
                       alt="trip avatar"
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).style.display = 'none';
-                        const fallback = (e.currentTarget.nextElementSibling as HTMLElement);
-                        if (fallback) fallback.classList.remove('hidden');
+                        (e.currentTarget as HTMLImageElement).style.display =
+                          "none";
+                        const fallback = e.currentTarget
+                          .nextElementSibling as HTMLElement;
+                        if (fallback) fallback.classList.remove("hidden");
                       }}
                     />
                     <Users className="hidden w-5 h-5 text-muted-foreground" />
@@ -562,17 +606,17 @@ const TripChat = () => {
                 )}
                 <h1>{tripName}</h1>
               </div>
-              {/* <div>
+              <div>
                 <span className="text-xs text-muted-foreground">
-                  {trip.members
+                  {members
                     ?.slice(0, 3)
-                    .map((member) => member.name)
+                    .map((member) => member)
                     .join(", ")}
-                  {trip.members &&
-                    trip.members.length > 3 &&
-                    ` +${trip.members.length - 3} more`}
+                  {members &&
+                    members.length > 3 &&
+                    ` +${members.length - 3} more`}
                 </span>
-              </div> */}
+              </div>
             </div>
 
             <Button
@@ -624,23 +668,28 @@ const TripChat = () => {
                 <div className="mb-4">
                   <div className="flex gap-3 mb-4 items-center">
                     <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                      <span className="text-sm font-medium text-gray-700">AI</span>
+                      <span className="text-sm font-medium text-gray-700">
+                        AI
+                      </span>
                     </div>
                     <div className="flex-1 max-w-[80%]">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-sm font-medium">AI Assistant</span>
-                        <span className="text-xs text-muted-foreground">Just now</span>
+                        <span className="text-sm font-medium">
+                          AI Assistant
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          Just now
+                        </span>
                       </div>
-                      <p className="text-sm bg-muted p-3 rounded-lg">
-                        Welcome to {tripName || "your trip"}! 🎉 I'm your amiGO, your AI travel assistant. I'm here to help you plan the perfect trip. Discuss your preferences, ask about destinations, flights, hotels, or request your itinerary!
+                      <p className="text-sm bg-gradient-to-r from-purple-50 to-blue-50 p-3 rounded-lg whitespace-pre-line">
+                        Welcome to {tripName || "your trip"}! 🎉 I'm amiGO, your AI travel assistant. I'm here to help you plan the perfect trip. Discuss your preferences, ask about destinations, flights, hotels, or request your itinerary!
                       </p>
                     </div>
                   </div>
                 </div>
 
                 {messages?.map(renderMessage)}
-                
-                
+
                 <div ref={messagesEndRef} />
               </div>
 

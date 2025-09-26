@@ -1,28 +1,15 @@
 import React from 'react';
 import { Carousel } from './Carousel';
 import { FlightCard } from './FlightCard';
+import { Flight } from '@/types/consensus';
 
-interface FlightOption {
-  departureTime: string;
-  departureCode: string;
-  departureCity: string;
-  arrivalTime: string;
-  arrivalCode: string;
-  arrivalCity: string;
-  flightDuration: string;
-  airline: string;
-  flightCode: string;
-  classType: string;
-  price: string;
-  oldPrice?: string;
-  ctaText: string;
-}
 
 interface FlightCarouselProps {
-  flights: FlightOption[];
+  flights: Flight[];
+  travellers: number;
 }
 
-export const FlightCarousel: React.FC<FlightCarouselProps> = ({ flights }) => {
+export const FlightCarousel: React.FC<FlightCarouselProps> = ({ flights, travellers }) => {
   return (
     <div className="w-full">
       <Carousel 
@@ -34,6 +21,7 @@ export const FlightCarousel: React.FC<FlightCarouselProps> = ({ flights }) => {
           <FlightCard 
             key={index}
             {...flight}
+            travellers={travellers}
           />
         ))}
       </Carousel>

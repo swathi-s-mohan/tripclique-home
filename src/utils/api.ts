@@ -120,3 +120,29 @@ export const getItinerary = async () => {
     method: "GET",
   });
 }
+
+export const getBookings = async () => {
+  return apiRequest("/bookings/mock", {
+    method: "GET",
+  });
+}
+export const getMembers = (trip_id: string) => {
+  return apiRequest(`/trips/${trip_id}/members`, {
+    method: "GET",
+  });
+};
+
+export const getHotels = () => {
+  return apiRequest(`/hotels/search?destination=Mumbai`, {
+    method: "GET",
+  });
+};
+
+export const getFlights = () => {
+  return apiRequest(
+    `/flights/search?origin_code=COK&origin_city=Kochi&dest_code=BOM&dest_city=Mumbai`,
+    {
+      method: "GET",
+    }
+  );
+};
