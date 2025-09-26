@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { login } from "@/utils/api";
 import { useAuth } from "@/contexts/AuthContext";
-import amigoLogo from "@/assets/amigo-logo.png";
+import amigoLogo from "@/assets/logo-amigo.png";
 
 const Login = () => {
   const navigate = useNavigate();
