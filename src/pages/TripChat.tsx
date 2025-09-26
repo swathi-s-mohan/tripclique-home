@@ -35,7 +35,6 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect, useRef } from "react";
 import { DropdownMenu } from "@/components/DropdownMenu";
-import { BookingsModal } from "@/components/BookingsModal";
 import { ItineraryModal } from "@/components/ItineraryModal";
 import { Consensus, Hotel } from "@/types/consensus";
 import { DestinationCarousel } from "@/components/DestinationCarousal";
@@ -43,6 +42,7 @@ import ChatShimmer from "@/components/ChatShimmer";
 import { HotelCarousel } from "@/components/HotelCarousel";
 import { FlightCarousel } from "@/components/FlightCarousel";
 import { ConsensusReached } from "@/components/ConsensusReached";
+import { BookingsModal } from "@/components/BookingsModal";
 
 const TripChat = () => {
   const { tripId } = useParams<{ tripId: string }>();
@@ -71,6 +71,8 @@ const TripChat = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const lastMessageCountRef = useRef(0);
   const [startBooking, setStartBooking] = useState(false);
+
+  const [showBookingsModal, setShowBookingsModal] = useState(false);
 
   const [members, setMembers] = useState<string[]>([]);
   const [hotels, setHotels] = useState<Hotel[]>([]);
@@ -232,7 +234,7 @@ const TripChat = () => {
             </div>
           </div>
         </div>
-        <div key="booking-message" className="mb-4">
+        <div key="booking-message-1" className="mb-4">
           <div className="flex gap-3 mb-2">
             <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-green-500 rounded-full flex items-center justify-center">
               <Plane className="w-4 h-4 text-white" />
@@ -774,7 +776,7 @@ const TripChat = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setStartBooking(true)}
+                      onClick={() => setShowBookingsModal(true)}
                       className="rounded-full bg-white shadow-sm border-border hover:bg-muted/50"
                     >
                       Bookings
@@ -915,10 +917,10 @@ const TripChat = () => {
         }
 
         {/* Modals */}
-        {/* <BookingsModal
-          isOpen={startBooking}
+        <BookingsModal
+          isOpen={showBookingsModal}
           onClose={() => setShowBookingsModal(false)}
-        /> */}
+        />
         <ItineraryModal
           isOpen={showItineraryModal}
           onClose={() => setShowItineraryModal(false)}
