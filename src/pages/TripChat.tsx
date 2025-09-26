@@ -32,6 +32,7 @@ import { BookingsModal } from "@/components/BookingsModal";
 import { ItineraryModal } from "@/components/ItineraryModal";
 import { Consensus } from "@/types/consensus";
 import { DestinationCarousel } from "@/components/DestinationCarousal";
+import { ConsensusReached } from "@/components/ConsensusReached";
 import ChatShimmer from "@/components/ChatShimmer";
 
 const TripChat = () => {
@@ -163,9 +164,10 @@ const TripChat = () => {
     // const isUser = message.sender?.id === "1";
     // const isAi = message.type === "ai";
     const isDestination = message.consensus !== null;
+    const hasConsensusCard = message.consensus?.consensus_card !== undefined;
     // const isFlight = message.type === "flight";
     // const isHotel = message.type === "hotel";
-
+    
     const isCurrentUser = message.username === user?.username;
 
     if (isCurrentUser) {
@@ -197,6 +199,63 @@ const TripChat = () => {
     }
 
     if (isDestination) {
+      // Check if consensus_card exists - show ConsensusReached component
+      if (hasConsensusCard) {
+        return (
+          <div key={message.id} className="mb-4">
+            <div className="flex gap-3 mb-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center">
+                <MapIcon className="w-4 h-4 text-white" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium">
+                    Consensus Reached
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {new Date(message.time).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="ml-11">
+              <ConsensusReached
+                data={{
+                  tripTitle: `${message.consensus?.consensus_card.places[0]?.place || 'Trip'} - ${message.consensus?.consensus_card.no_of_days} days`,
+                  dates: {
+                    from: new Date(message.consensus?.consensus_card.date || '').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                    to: new Date(new Date(message.consensus?.consensus_card.date || '').getTime() + (message.consensus?.consensus_card.no_of_days || 0) * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                    duration: `${message.consensus?.consensus_card.no_of_days || 0} days`,
+                    range: message.consensus?.consensus_card.weekdays_range || ''
+                  },
+                  experiences: message.consensus?.consensus_card.places.map(place => ({
+                    title: place.place,
+                    description: place.features || 'Amazing destination experience',
+                    tags: place.keywords || ['Travel', 'Adventure'],
+                    thumbnail: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=100&h=100&fit=crop&crop=center'
+                  })) || [],
+                  costEstimate: {
+                    perPerson: `$${((message.consensus?.consensus_card.flight_cost_per_person || 0) + (message.consensus?.consensus_card.accommodation_cost_per_person || 0) + (message.consensus?.consensus_card.transportation_cost_per_person || 0)).toLocaleString()}`,
+                    breakdown: {
+                      flight: `$${(message.consensus?.consensus_card.flight_cost_per_person || 0).toLocaleString()}`,
+                      stay: `$${(message.consensus?.consensus_card.accommodation_cost_per_person || 0).toLocaleString()}`,
+                      localTransport: `$${(message.consensus?.consensus_card.transportation_cost_per_person || 0).toLocaleString()}`
+                    }
+                  }
+                }}
+                onStartBooking={() => setShowBookingsModal(true)}
+                onKeepDiscussing={() => {}}
+                onRegenerate={() => {}}
+              />
+            </div>
+          </div>
+        );
+      }
+      
+      // Show DestinationCarousel for regular destination recommendations
       return (
         <div key={message.id} className="mb-4">
           <div className="flex gap-3 mb-2">

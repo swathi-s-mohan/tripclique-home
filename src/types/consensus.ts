@@ -1,3 +1,20 @@
+export interface Place {
+  place: string;
+  features: string;
+  keywords: string[];
+}
+
+export interface ConsensusCard {
+  date: string;
+  places: Place[];
+  no_of_days: number;
+  origin_place: string | null;
+  weekdays_range: string;
+  flight_cost_per_person: number;
+  accommodation_cost_per_person: number;
+  transportation_cost_per_person: number;
+}
+
 export interface ConsensusSummary {
   end_date: string | null;
   budget_max: number | null;
@@ -22,6 +39,7 @@ export interface Consensus {
   summary: ConsensusSummary;
   trip_id: string;
   candidates: ConsensusCandidate[];
+  consensus_card: ConsensusCard;
 }
 
 export type BudgetRange = 'budget' | 'mid-range' | 'luxury';
