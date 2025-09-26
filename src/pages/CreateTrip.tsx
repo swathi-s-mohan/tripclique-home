@@ -1,4 +1,4 @@
-import { ArrowLeft, Camera, Calendar, MapPin, Wifi, Waves, Building, Mountain, UtensilsCrossed, Gamepad2, ShoppingBag } from "lucide-react";
+import { ArrowLeft, Camera, MapPin, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,31 +14,25 @@ const CreateTrip = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [selectedPreferences, setSelectedPreferences] = useState<string[]>([]);
-  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFlexible, setIsFlexible] = useState(false);
+  const [preferredPlaces, setPreferredPlaces] = useState<string[]>([]);
+  const [currentPlace, setCurrentPlace] = useState('');
   
   // Form state
   const [formData, setFormData] = useState({
     tripName: '',
     startDate: '',
     endDate: '',
-    preferredPlaces: '',
     minBudget: '',
     maxBudget: ''
   });
 
   const travelPreferences = [
-    { id: "beach", label: "Beach & Relax", icon: Waves },
-    { id: "culture", label: "Culture & History", icon: Building },
-    { id: "adventure", label: "Adventure", icon: Mountain },
-    { id: "food", label: "Food & Dining", icon: UtensilsCrossed }
-  ];
-
-  const amenities = [
-    { id: "wifi", label: "Free WiFi", icon: Wifi },
-    { id: "pool", label: "Pool", icon: Waves },
-    { id: "nightlife", label: "Nightlife", icon: Gamepad2 },
-    { id: "shopping", label: "Shopping", icon: ShoppingBag }
+    { id: "beach", label: "Beach & Relax", icon: "🏖️" },
+    { id: "culture", label: "Culture & History", icon: "🏛️" },
+    { id: "adventure", label: "Adventure", icon: "🧗" },
+    { id: "food", label: "Food & Dining", icon: "🍽️" }
   ];
 
   const togglePreference = (id: string) => {
@@ -49,12 +43,22 @@ const CreateTrip = () => {
     );
   };
 
-  const toggleAmenity = (id: string) => {
-    setSelectedAmenities(prev => 
-      prev.includes(id) 
-        ? prev.filter(a => a !== id)
-        : [...prev, id]
-    );
+  const addPlace = () => {
+    if (currentPlace.trim() && preferredPlaces.length < 5 && !preferredPlaces.includes(currentPlace.trim())) {
+      setPreferredPlaces(prev => [...prev, currentPlace.trim()]);
+      setCurrentPlace('');
+    }
+  };
+
+  const removePlace = (place: string) => {
+    setPreferredPlaces(prev => prev.filter(p => p !== place));
+  };
+
+  const handlePlaceKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addPlace();
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -85,11 +89,7 @@ const CreateTrip = () => {
         dateRanges.push(formData.startDate);
       }
 
-      // Prepare preferred places
-      const preferredPlaces: string[] = [];
-      if (formData.preferredPlaces.trim()) {
-        preferredPlaces.push(formData.preferredPlaces.trim());
-      }
+      // Use the preferredPlaces array directly
 
       // Calculate budget (use max budget if available, otherwise min budget)
       const budget = formData.maxBudget 
@@ -109,16 +109,8 @@ const CreateTrip = () => {
         }
       });
 
-      // Prepare must-haves (map amenities to API format)
-      const mustHaves = selectedAmenities.map(amenity => {
-        switch (amenity) {
-          case 'wifi': return 'Free WiFi';
-          case 'pool': return 'Pool';
-          case 'nightlife': return 'Nightlife';
-          case 'shopping': return 'Shopping';
-          default: return amenity;
-        }
-      });
+      // No must-haves for simplified design
+      const mustHaves: string[] = [];
 
       const requestBody = {
         trip_name: formData.tripName.trim(),
@@ -166,22 +158,20 @@ const CreateTrip = () => {
         <main className="px-6 py-6 space-y-8">
           {/* Trip Icon and Name */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-4">
-              <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center border-2 border-dashed border-border">
-                <Camera className="w-8 h-8 text-muted-foreground" />
-              </div>
-              <div className="flex-1">
-                <Label htmlFor="tripName" className="text-base font-medium text-foreground">
-                  Trip name
-                </Label>
-                <Input
-                  id="tripName"
-                  placeholder="Enter trip name"
-                  value={formData.tripName}
-                  onChange={(e) => handleInputChange('tripName', e.target.value)}
-                  className="mt-2 h-12 rounded-xl border-border bg-background"
-                />
-              </div>
+            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center border-2 border-dashed border-border mx-auto">
+              <Camera className="w-6 h-6 text-muted-foreground" />
+            </div>
+            <div>
+              <Label htmlFor="tripName" className="text-base font-medium text-foreground">
+                Trip name
+              </Label>
+              <Input
+                id="tripName"
+                placeholder="Enter trip name"
+                value={formData.tripName}
+                onChange={(e) => handleInputChange('tripName', e.target.value)}
+                className="mt-2 h-12 rounded-lg border-border bg-background"
+              />
             </div>
           </div>
           
@@ -191,30 +181,38 @@ const CreateTrip = () => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="startDate" className="text-sm text-muted-foreground">Start Date</Label>
-                <div className="relative mt-2">
-                  <Input
-                    id="startDate"
-                    type="date"
-                    value={formData.startDate}
-                    onChange={(e) => handleInputChange('startDate', e.target.value)}
-                    className="h-12 rounded-xl border-border bg-background pr-12"
-                  />
-                  {/* <Calendar className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" /> */}
-                </div>
+                <Input
+                  id="startDate"
+                  type="date"
+                  placeholder="dd/mm/yyyy"
+                  value={formData.startDate}
+                  onChange={(e) => handleInputChange('startDate', e.target.value)}
+                  disabled={isFlexible}
+                  className={`mt-2 h-12 rounded-lg border-border bg-background ${isFlexible ? 'opacity-50 cursor-not-allowed' : ''}`}
+                />
               </div>
               <div>
                 <Label htmlFor="endDate" className="text-sm text-muted-foreground">End Date</Label>
-                <div className="relative mt-2">
-                  <Input
-                    id="endDate"
-                    type="date"
-                    value={formData.endDate}
-                    onChange={(e) => handleInputChange('endDate', e.target.value)}
-                    className="h-12 rounded-xl border-border bg-background pr-12"
-                  />
-                  {/* <Calendar className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" /> */}
-                </div>
+                <Input
+                  id="endDate"
+                  type="date"
+                  placeholder="dd/mm/yyyy"
+                  value={formData.endDate}
+                  onChange={(e) => handleInputChange('endDate', e.target.value)}
+                  disabled={isFlexible}
+                  className={`mt-2 h-12 rounded-lg border-border bg-background ${isFlexible ? 'opacity-50 cursor-not-allowed' : ''}`}
+                />
               </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="flexible"
+                checked={isFlexible}
+                onCheckedChange={(checked) => setIsFlexible(checked === true)}
+              />
+              <Label htmlFor="flexible" className="text-sm text-foreground cursor-pointer">
+                I'm flexible
+              </Label>
             </div>
           </div>
           
@@ -226,13 +224,34 @@ const CreateTrip = () => {
             </div>
             <div className="relative">
               <Input
-                placeholder="Enter destination"
-                value={formData.preferredPlaces}
-                onChange={(e) => handleInputChange('preferredPlaces', e.target.value)}
-                className="h-12 rounded-xl border-border bg-background pr-12"
+                placeholder="Enter a place"
+                value={currentPlace}
+                onChange={(e) => setCurrentPlace(e.target.value)}
+                onKeyPress={handlePlaceKeyPress}
+                onBlur={addPlace}
+                disabled={preferredPlaces.length >= 5}
+                className="h-12 rounded-lg border-border bg-background pr-12"
               />
               <MapPin className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             </div>
+            {preferredPlaces.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {preferredPlaces.map((place, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-1 px-3 py-1 bg-muted rounded-full text-sm"
+                  >
+                    <span>{place}</span>
+                    <button
+                      onClick={() => removePlace(place)}
+                      className="ml-1 text-muted-foreground hover:text-foreground"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           
           {/* Budget */}
@@ -244,10 +263,10 @@ const CreateTrip = () => {
                 <Input
                   id="minBudget"
                   type="number"
-                  placeholder="Min amount"
+                  placeholder="0"
                   value={formData.minBudget}
                   onChange={(e) => handleInputChange('minBudget', e.target.value)}
-                  className="mt-2 h-12 rounded-xl border-border bg-background"
+                  className="mt-2 h-12 rounded-lg border-border bg-background"
                 />
               </div>
               <div>
@@ -255,10 +274,10 @@ const CreateTrip = () => {
                 <Input
                   id="maxBudget"
                   type="number"
-                  placeholder="Max amount"
+                  placeholder="0"
                   value={formData.maxBudget}
                   onChange={(e) => handleInputChange('maxBudget', e.target.value)}
-                  className="mt-2 h-12 rounded-xl border-border bg-background"
+                  className="mt-2 h-12 rounded-lg border-border bg-background"
                 />
               </div>
             </div>
@@ -266,29 +285,22 @@ const CreateTrip = () => {
           
           {/* Travel Preferences */}
           <div className="space-y-4">
-            <Label className="text-xl font-bold text-foreground">Travel Preferences</Label>
+            <Label className="text-base font-medium text-foreground">Travel Preferences</Label>
             <div className="grid grid-cols-2 gap-3">
               {travelPreferences.map((preference) => {
-                const Icon = preference.icon;
                 const isSelected = selectedPreferences.includes(preference.id);
                 return (
                   <div
                     key={preference.id}
                     onClick={() => togglePreference(preference.id)}
-                    className={`p-6 rounded-2xl border-2 cursor-pointer transition-all ${
+                    className={`p-4 rounded-xl border cursor-pointer transition-all ${
                       isSelected 
                         ? 'border-primary bg-primary/5' 
                         : 'border-border bg-card hover:bg-accent/50'
                     }`}
                   >
-                    <div className="flex flex-col items-center text-center space-y-3">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                        isSelected ? 'bg-primary/10' : 'bg-muted'
-                      }`}>
-                        <Icon className={`w-6 h-6 ${
-                          isSelected ? 'text-primary' : 'text-muted-foreground'
-                        }`} />
-                      </div>
+                    <div className="flex flex-col items-center text-center space-y-2">
+                      <span className="text-2xl">{preference.icon}</span>
                       <span className={`text-sm font-medium ${
                         isSelected ? 'text-primary' : 'text-foreground'
                       }`}>
@@ -301,43 +313,14 @@ const CreateTrip = () => {
             </div>
           </div>
           
-          {/* Must-Have Amenities */}
-          <div className="space-y-4">
-            <Label className="text-xl font-bold text-foreground">Must-Have Amenities</Label>
-            <div className="grid grid-cols-2 gap-4">
-              {amenities.map((amenity) => {
-                const Icon = amenity.icon;
-                const isChecked = selectedAmenities.includes(amenity.id);
-                return (
-                  <div key={amenity.id} className="flex items-center space-x-3">
-                    <Checkbox
-                      id={amenity.id}
-                      checked={isChecked}
-                      onCheckedChange={() => toggleAmenity(amenity.id)}
-                    />
-                    <div className="flex items-center space-x-2">
-                      <Icon className="w-4 h-4 text-muted-foreground" />
-                      <Label 
-                        htmlFor={amenity.id}
-                        className="text-sm font-medium text-foreground cursor-pointer"
-                      >
-                        {amenity.label}
-                      </Label>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          
           {/* Create Button */}
           <div className="pt-6 pb-8">
             <Button 
               onClick={handleCreateTrip}
               disabled={isLoading}
-              className="w-full h-14 text-base font-semibold rounded-2xl bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50"
+              className="w-full h-12 text-base font-medium rounded-lg bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50"
             >
-              {isLoading ? 'Creating trip...' : 'Create & Open chat'}
+              {isLoading ? 'Creating trip...' : 'Create & Open Chat'}
             </Button>
           </div>
         </main>
