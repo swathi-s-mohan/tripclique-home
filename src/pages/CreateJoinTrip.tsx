@@ -1,6 +1,6 @@
 import { ArrowLeft, Plus, UserPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import amigoLogo from "@/assets/amigo-logo.png";
+import amigoLogo from "@/assets/logo-amigo.png";
 
 const CreateJoinTrip = ({ showHeader = true }: { showHeader?: boolean }) => {
   const navigate = useNavigate();

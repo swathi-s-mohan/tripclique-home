@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
 import { signUp } from "@/utils/api";
 import { useToast } from "@/hooks/use-toast";
-import amigoLogo from "@/assets/amigo-logo.png";
+import amigoLogo from "@/assets/logo-amigo.png";
 
 const SignUp = () => {
   const navigate = useNavigate();
