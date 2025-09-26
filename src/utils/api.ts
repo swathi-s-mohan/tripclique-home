@@ -120,6 +120,12 @@ export const getItinerary = async () => {
     method: "GET",
   });
 }
+
+export const getBookings = async () => {
+  return apiRequest("/bookings/mock", {
+    method: "GET",
+  });
+}
 export const getMembers = (trip_id: string) => {
   return apiRequest(`/trips/${trip_id}/members`, {
     method: "GET",

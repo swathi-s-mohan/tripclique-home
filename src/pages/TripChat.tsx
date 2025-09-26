@@ -332,32 +332,10 @@ const TripChat = () => {
                     message.consensus?.consensus_card.places[0]?.place || "Trip"
                   } - ${message.consensus?.consensus_card.no_of_days} days`,
                   dates: {
-                    from: new Date(
-                      message.consensus?.consensus_card.date || ""
-                    ).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    }),
-                    to: new Date(
-                      new Date(
-                        message.consensus?.consensus_card.date || ""
-                      ).getTime() +
-                        (message.consensus?.consensus_card.no_of_days || 0) *
-                          24 *
-                          60 *
-                          60 *
-                          1000
-                    ).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    }),
-                    duration: `${
-                      message.consensus?.consensus_card.no_of_days || 0
-                    } days`,
-                    range:
-                      message.consensus?.consensus_card.weekdays_range || "",
+                    from: new Date('Oct 01, 2025').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                    to: new Date('Oct 03, 2025').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                    duration: `${3} days`,
+                    range: 'Friday to Sunday'
                   },
                   experiences:
                     message.consensus?.consensus_card.places.map((place) => ({
@@ -700,12 +678,8 @@ const TripChat = () => {
                           Just now
                         </span>
                       </div>
-                      <p className="text-sm bg-muted p-3 rounded-lg">
-                        Welcome to {tripName || "your trip"}! 🎉 I'm your AmiGO,
-                        your AI travel assistant. I'm here to help you plan the
-                        perfect trip. Discuss your preferences, ask about
-                        destinations, flights, hotels, or request your
-                        itinerary!
+                      <p className="text-sm bg-gradient-to-r from-purple-50 to-blue-50 p-3 rounded-lg whitespace-pre-line">
+                        Welcome to {tripName || "your trip"}! 🎉 I'm amiGO, your AI travel assistant. I'm here to help you plan the perfect trip. Discuss your preferences, ask about destinations, flights, hotels, or request your itinerary!
                       </p>
                     </div>
                   </div>
