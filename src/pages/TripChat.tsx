@@ -338,10 +338,18 @@ const TripChat = () => {
                     message.consensus?.consensus_card.places[0]?.place || "Trip"
                   } - ${message.consensus?.consensus_card.no_of_days} days`,
                   dates: {
-                    from: new Date('Oct 01, 2025').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-                    to: new Date('Oct 03, 2025').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                    from: new Date("Oct 01, 2025").toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    }),
+                    to: new Date("Oct 03, 2025").toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    }),
                     duration: `${3} days`,
-                    range: 'Friday to Sunday'
+                    range: "Friday to Sunday",
                   },
                   experiences:
                     message.consensus?.consensus_card.places.map((place) => ({
@@ -385,6 +393,35 @@ const TripChat = () => {
           </div>
         );
       }
+      return (
+        <div key={message.id} className="mb-4">
+          <div className="flex gap-3 mb-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-green-500 rounded-full flex items-center justify-center">
+              <MapIcon className="w-4 h-4 text-white" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">
+                  Destination Recommendations
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {new Date(message.time).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="ml-11">
+            <div className="bg-white border border-gray-200 rounded-2xl p-4">
+              <DestinationCarousel
+                destinations={message.consensus?.candidates}
+              />
+            </div>
+          </div>
+        </div>
+      );
     }
 
     // Left-aligned message for other users
@@ -685,7 +722,11 @@ const TripChat = () => {
                         </span>
                       </div>
                       <p className="text-sm bg-gradient-to-r from-purple-50 to-blue-50 p-3 rounded-lg whitespace-pre-line">
-                        Welcome to {tripName || "your trip"}! 🎉 I'm amiGO, your AI travel assistant. I'm here to help you plan the perfect trip. Discuss your preferences, ask about destinations, flights, hotels, or request your itinerary!
+                        Welcome to {tripName || "your trip"}! 🎉 I'm amiGO, your
+                        AI travel assistant. I'm here to help you plan the
+                        perfect trip. Discuss your preferences, ask about
+                        destinations, flights, hotels, or request your
+                        itinerary!
                       </p>
                     </div>
                   </div>
