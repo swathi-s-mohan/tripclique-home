@@ -98,7 +98,7 @@ export const ItineraryModal = ({ isOpen, onClose }: ItineraryModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[390px] h-[80vh] p-0 rounded-xl overflow-hidden flex flex-col fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+      <DialogContent className="w-[calc(100vw-40px)] max-w-[350px] h-[80vh] p-0 rounded-xl overflow-hidden flex flex-col fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         {/* Fixed Header */}
         <DialogHeader className="flex-shrink-0 bg-background border-b p-4">
           <div className="flex items-center justify-between">
