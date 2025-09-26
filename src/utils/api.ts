@@ -114,3 +114,9 @@ export const sendAiAnalysis = async (trip_id: string) => {
     method: "POST",
   });
 };
+
+export const getItinerary = async () => {
+  return apiRequest("/itinerary/mock", {
+    method: "GET",
+  });
+}
