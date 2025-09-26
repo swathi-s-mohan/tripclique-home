@@ -22,7 +22,9 @@ export const TripCard = ({
   const navigate = useNavigate();
   const { user } = useAuth();
   const handleTripClick = () => {
-    navigate(`/trip-chat/${tripId}?tripName=${tripName}`);
+    const params = new URLSearchParams({ tripName });
+    if (avatarIcon) params.set("avatarIcon", avatarIcon);
+    navigate(`/trip-chat/${tripId}?${params.toString()}`);
   };
 
   return (

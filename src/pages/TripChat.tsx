@@ -39,6 +39,7 @@ const TripChat = () => {
   const { tripId } = useParams<{ tripId: string }>();
   const [searchParams] = useSearchParams();
   const tripName = searchParams.get("tripName");
+  const avatarIcon = searchParams.get("avatarIcon") || undefined;
   const navigate = useNavigate();
   const { user } = useAuth();
   const [messages, setMessages] = useState<
@@ -541,7 +542,26 @@ const TripChat = () => {
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <div className="flex-1">
-              <h1>{tripName}</h1>
+              <div className="flex items-center gap-2">
+                {avatarIcon ? (
+                  <div className="w-5 h-5 rounded-full overflow-hidden flex-shrink-0">
+                    <img
+                      src={avatarIcon}
+                      alt="trip avatar"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).style.display = 'none';
+                        const fallback = (e.currentTarget.nextElementSibling as HTMLElement);
+                        if (fallback) fallback.classList.remove('hidden');
+                      }}
+                    />
+                    <Users className="hidden w-5 h-5 text-muted-foreground" />
+                  </div>
+                ) : (
+                  <Users className="w-5 h-5 text-muted-foreground" />
+                )}
+                <h1>{tripName}</h1>
+              </div>
               {/* <div>
                 <span className="text-xs text-muted-foreground">
                   {trip.members
