@@ -59,7 +59,7 @@ const  Index = () => {
       <div className="max-w-[390px] mx-auto min-h-screen bg-background">
         {/* Header */}
         <header className="px-6 py-6 border-b border-border flex items-center justify-between relative">
-          <img src={amigoLogo} alt="amiGo" className="h-10 w-auto" />
+          <img src={amigoLogo} alt="amiGo" className="h-16 w-16" />
 
           {/* Profile Button */}
           <div className="relative">
