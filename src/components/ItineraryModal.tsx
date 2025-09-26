@@ -98,34 +98,35 @@ export const ItineraryModal = ({ isOpen, onClose }: ItineraryModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[calc(100vw-32px)] max-w-[390px] h-[85vh] max-h-[85vh] p-0 rounded-xl overflow-hidden flex flex-col mx-4 sm:w-[390px] sm:mx-auto">
+      <DialogContent className="w-[390px] h-[80vh] p-0 rounded-xl overflow-hidden flex flex-col fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         {/* Fixed Header */}
-        <DialogHeader className="flex-shrink-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10 p-3 pb-2 border-b">
+        <DialogHeader className="flex-shrink-0 bg-background border-b p-4">
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-base font-bold">Trip Itinerary</DialogTitle>
+            <DialogTitle className="text-lg font-semibold">Trip Itinerary</DialogTitle>
             <Button
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="w-6 h-6 rounded-full hover:bg-muted"
+              className="w-8 h-8 rounded-full hover:bg-muted"
             >
-              <X className="w-3 h-3" />
+              <X className="w-4 h-4" />
             </Button>
           </div>
         </DialogHeader>
 
         {/* Scrollable Content */}
-        <ScrollArea className="flex-1 min-h-0">
-          <div className="px-3">
-            {loading ? (
-              <div className="py-6 text-center text-xs text-muted-foreground">Loading itinerary...</div>
-            ) : (
-            <Accordion
-              type="single"
-              collapsible
-              defaultValue={itineraryData.length > 0 ? `day-${itineraryData[0].day}` : undefined}
-              className="pb-3"
-            >
+        <div className="flex-1 overflow-hidden">
+          <ScrollArea className="h-full">
+            <div className="p-4">
+              {loading ? (
+                <div className="py-8 text-center text-sm text-muted-foreground">Loading itinerary...</div>
+              ) : (
+              <Accordion
+                type="single"
+                collapsible
+                defaultValue={itineraryData.length > 0 ? `day-${itineraryData[0].day}` : undefined}
+                className="space-y-2"
+              >
              {itineraryData.map((day) => (
                <AccordionItem key={day.day} value={`day-${day.day}`} className="border-none">
                  <AccordionTrigger className="hover:no-underline py-2 px-1 [&>svg]:w-3 [&>svg]:h-3">
@@ -188,11 +189,12 @@ export const ItineraryModal = ({ isOpen, onClose }: ItineraryModalProps) => {
                    </div>
                  </AccordionContent>
                </AccordionItem>
-             ))}
-           </Accordion>
-           )}
-          </div>
-        </ScrollArea>
+              ))}
+              </Accordion>
+              )}
+            </div>
+          </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );
