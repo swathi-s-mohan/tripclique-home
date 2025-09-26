@@ -11,7 +11,7 @@ import { getTripsByUser } from "@/utils/api";
 import { useAuth } from "@/contexts/AuthContext";
 import CreateJoinTrip from "./CreateJoinTrip";
 
-const Index = () => {
+const  Index = () => {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const navigate = useNavigate();
   const { user, logout, isLoading: authLoading } = useAuth();
