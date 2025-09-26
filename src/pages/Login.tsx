@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { login } from "@/utils/api";
 import { useAuth } from "@/contexts/AuthContext";
-import amigoLogo from "@/assets/logo-amigo.png";
+import amigoLogo from "@/assets/amigo-logo.svg";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -80,13 +80,8 @@ const Login = () => {
           {/* Logo */}
           <div className="text-center mb-12 mt-8">
             <div className="flex justify-center mb-4">
-              <img src={amigoLogo} alt="amiGo" className="h-24 w-auto" />
+              <img src={amigoLogo} alt="amiGo" className="h-18 w-auto" />
             </div>
-          </div>
-
-          {/* Title */}
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-foreground mb-2">Welcome back!</h2>
           </div>
 
           {/* Error Message */}

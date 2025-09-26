@@ -622,6 +622,7 @@ const TripChat = () => {
               variant="ghost"
               size="sm"
               onClick={() => navigate("/profile")}
+              className="hover:bg-transparent hover:text-foreground"
             >
               <ArrowLeft className="w-5 h-5" />
             </Button>
@@ -679,9 +680,9 @@ const TripChat = () => {
           <div className="flex border-b border-border">
             <button
               onClick={() => setActiveTab("chat")}
-              className={`flex-1 py-3 px-4 text-sm transition-colors border-b-2 text-center cursor-pointer ${
+              className={`flex-1 py-3 px-4 text-sm transition-colors border-b-2 text-center cursor-pointer -mb-px ${
                 activeTab === "chat"
-                  ? "border-primary text-primary bg-accent/50"
+                  ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -689,9 +690,9 @@ const TripChat = () => {
             </button>
             <button
               onClick={() => setActiveTab("timeline")}
-              className={`flex-1 py-3 px-4 text-sm transition-colors border-b-2 text-center cursor-pointer ${
+              className={`flex-1 py-3 px-4 text-sm transition-colors border-b-2 text-center cursor-pointer -mb-px ${
                 activeTab === "timeline"
-                  ? "border-primary text-primary bg-accent/50"
+                  ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -724,11 +725,7 @@ const TripChat = () => {
                         </span>
                       </div>
                       <p className="text-sm bg-gradient-to-r from-purple-50 to-blue-50 p-3 rounded-lg whitespace-pre-line">
-                        Welcome to {tripName || "your trip"}! 🎉 I'm amiGO, your
-                        AI travel assistant. I'm here to help you plan the
-                        perfect trip. Discuss your preferences, ask about
-                        destinations, flights, hotels, or request your
-                        itinerary!
+                        Welcome to {tripName || "your trip"}! 🎉 I'm amiGo, your AI travel assistant. I'm here to help you plan the perfect trip. Discuss your preferences, ask about destinations, flights, hotels, or request your itinerary!
                       </p>
                     </div>
                   </div>

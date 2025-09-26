@@ -82,7 +82,7 @@ const SignUp = () => {
 
           {/* Title */}
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-foreground mb-2">Create your amiGO account</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-2">Create your amiGo account</h2>
           </div>
 
           {/* Form */}
