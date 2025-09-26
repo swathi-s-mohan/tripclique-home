@@ -67,10 +67,10 @@ const TripChat = () => {
   const [activeTab, setActiveTab] = useState<"chat" | "timeline">("chat");
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [showBookingsModal, setShowBookingsModal] = useState(false);
   const [showItineraryModal, setShowItineraryModal] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const lastMessageCountRef = useRef(0);
+  const [startBooking, setStartBooking] = useState(false);
 
   const [members, setMembers] = useState<string[]>([]);
   const [hotels, setHotels] = useState<Hotel[]>([]);
@@ -117,7 +117,7 @@ const TripChat = () => {
     // Scroll to end if:
     // 1. New messages were added (not just polling updates)
     // 2. This is the initial load (lastMessageCount is 0)
-    if (currentMessageCount > lastMessageCount || lastMessageCount === 0) {
+    if (currentMessageCount > lastMessageCount || lastMessageCount === 0 || startBooking)  {
       // Use setTimeout to ensure DOM is updated
       setTimeout(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -126,7 +126,7 @@ const TripChat = () => {
 
     // Update the last message count
     lastMessageCountRef.current = currentMessageCount;
-  }, [messages]);
+  }, [messages, startBooking]);
 
   // Reset message count when tripId changes (new trip selected)
   useEffect(() => {
@@ -151,12 +151,16 @@ const TripChat = () => {
     // Initial fetch
     fetchChats();
 
-    //Set up polling every 0.3 seconds
-    const interval = setInterval(fetchChats, 5000);
+    let interval = null;
+    //Set up polling every 1 second
+    if(!startBooking) 
+      interval = setInterval(fetchChats, 1000);
+    else
+      interval = null;
 
     // Cleanup interval on unmount
     return () => clearInterval(interval);
-  }, [tripId]);
+  }, [tripId, startBooking]);
 
   const handleSendMessage = async () => {
     if (!newMessage.trim() || !messages || !user?.username || !tripId) return;
@@ -199,6 +203,68 @@ const TripChat = () => {
     setIsAnalyzing(false);
   };
 
+  const renderBookingMessage = () => {
+    if (startBooking) {
+      return (
+        <>
+        <div key="booking-message" className="mb-4">
+          <div className="flex gap-3 mb-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+              <Building2 className="w-4 h-4 text-white" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">
+                  Hotel Recommendations
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {new Date().toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="ml-11">
+            <div className="bg-white border border-gray-200 rounded-2xl p-4">
+              <HotelCarousel hotels={hotels} travellers={members?.length ?? 0}/>
+            </div>
+          </div>
+        </div>
+        <div key="booking-message" className="mb-4">
+          <div className="flex gap-3 mb-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-green-500 rounded-full flex items-center justify-center">
+              <Plane className="w-4 h-4 text-white" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">
+                  Flight Recommendations
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {new Date().toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="ml-11">
+            <div className="bg-white border border-gray-200 rounded-2xl p-4">
+              <FlightCarousel
+                flights={flights}
+                travellers={members?.length ?? 0}
+              />
+            </div>
+          </div>
+        </div>
+        </>
+      );
+    }
+  }
+
   const renderMessage = (message: {
     id?: number;
     trip_id: string;
@@ -216,69 +282,6 @@ const TripChat = () => {
 
     const isCurrentUser = message.username === user?.username;
 
-    // if (true) {
-    //   return (
-    //     <div key={message.id} className="mb-4">
-    //       <div className="flex gap-3 mb-2">
-    //         <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-    //           <Building2 className="w-4 h-4 text-white" />
-    //         </div>
-    //         <div className="flex-1">
-    //           <div className="flex items-center gap-2">
-    //             <span className="text-sm font-medium">
-    //               Hotel Recommendations
-    //             </span>
-    //             <span className="text-xs text-muted-foreground">
-    //               {new Date(message.time).toLocaleTimeString([], {
-    //                 hour: "2-digit",
-    //                 minute: "2-digit",
-    //               })}
-    //             </span>
-    //           </div>
-    //         </div>
-    //       </div>
-    //       <div className="ml-11">
-    //         <div className="bg-white border border-gray-200 rounded-2xl p-4">
-    //           <HotelCarousel hotels={hotels} travellers={members?.length ?? 0}/>
-    //         </div>
-    //       </div>
-    //     </div>
-    //   );
-    // }
-
-    // if (true) {
-    //   return (
-    //     <div key={message.id} className="mb-4">
-    //       <div className="flex gap-3 mb-2">
-    //         <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-green-500 rounded-full flex items-center justify-center">
-    //           <Plane className="w-4 h-4 text-white" />
-    //         </div>
-    //         <div className="flex-1">
-    //           <div className="flex items-center gap-2">
-    //             <span className="text-sm font-medium">
-    //               Flight Recommendations
-    //             </span>
-    //             <span className="text-xs text-muted-foreground">
-    //               {new Date(message.time).toLocaleTimeString([], {
-    //                 hour: "2-digit",
-    //                 minute: "2-digit",
-    //               })}
-    //             </span>
-    //           </div>
-    //         </div>
-    //       </div>
-    //       <div className="ml-11">
-    //         <div className="bg-white border border-gray-200 rounded-2xl p-4">
-    //           <FlightCarousel
-    //             flights={flights}
-    //             travellers={members?.length ?? 0}
-    //           />
-    //         </div>
-    //       </div>
-    //     </div>
-    //   );
-    // }
-
     if (isCurrentUser) {
       // Right-aligned message for current user
       return (
@@ -286,7 +289,7 @@ const TripChat = () => {
           key={message.id}
           className="flex justify-end gap-3 mb-4 items-center"
         >
-          <div className="flex-1 max-w-[80%]">
+          <div className="flex-1 max-w-[60%]">
             <div className="flex justify-end items-center gap-2 mb-1">
               <span className="text-xs text-muted-foreground">
                 {new Date(message.time).toLocaleTimeString([], {
@@ -374,7 +377,7 @@ const TripChat = () => {
                     },
                   },
                 }}
-                onStartBooking={() => setShowBookingsModal(true)}
+                onStartBooking={() => setStartBooking(true)}
                 onKeepDiscussing={() => {}}
                 onRegenerate={() => {}}
               />
@@ -392,7 +395,7 @@ const TripChat = () => {
             {message.username?.charAt(0).toUpperCase() || "U"}
           </span>
         </div>
-        <div className="flex-1 max-w-[80%]">
+        <div className="flex-1 max-w-[60%]">
           <div className="flex items-center gap-2 mb-1">
             <span className="text-sm font-medium">{message.username}</span>
             <span className="text-xs text-muted-foreground">
@@ -672,7 +675,7 @@ const TripChat = () => {
                         AI
                       </span>
                     </div>
-                    <div className="flex-1 max-w-[80%]">
+                    <div className="flex-1 max-w-[60%]">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-sm font-medium">
                           AI Assistant
@@ -689,7 +692,7 @@ const TripChat = () => {
                 </div>
 
                 {messages?.map(renderMessage)}
-
+                {startBooking && renderBookingMessage()}
                 <div ref={messagesEndRef} />
               </div>
 
@@ -730,7 +733,7 @@ const TripChat = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setShowBookingsModal(true)}
+                      onClick={() => setStartBooking(true)}
                       className="rounded-full bg-white shadow-sm border-border hover:bg-muted/50"
                     >
                       Bookings
@@ -871,10 +874,10 @@ const TripChat = () => {
         }
 
         {/* Modals */}
-        <BookingsModal
-          isOpen={showBookingsModal}
+        {/* <BookingsModal
+          isOpen={startBooking}
           onClose={() => setShowBookingsModal(false)}
-        />
+        /> */}
         <ItineraryModal
           isOpen={showItineraryModal}
           onClose={() => setShowItineraryModal(false)}
