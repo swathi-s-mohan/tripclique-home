@@ -51,8 +51,8 @@ export const BookingConfirmationModal = ({
           {/* Confirmation Section */}
           <div className="flex flex-col items-center text-center space-y-6">
             {/* Success Icon */}
-            <div className="w-20 h-20 rounded-full bg-green-500 flex items-center justify-center shadow-lg">
-              <Check className="w-10 h-10 text-white stroke-[3]" />
+            <div className="w-24 h-24 rounded-full bg-success flex items-center justify-center shadow-floating animate-scale-in">
+              <Check className="w-12 h-12 text-success-foreground stroke-[3]" />
             </div>
 
             {/* Confirmation Text */}
@@ -68,11 +68,11 @@ export const BookingConfirmationModal = ({
           </div>
 
           {/* Booking Reference */}
-          <div className="bg-muted/50 rounded-lg p-4 space-y-2 text-center">
-            <p className="text-sm text-muted-foreground font-medium">
+          <div className="bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/20 rounded-2xl p-6 space-y-3 text-center shadow-soft">
+            <p className="text-sm text-muted-foreground font-semibold">
               Booking Reference
             </p>
-            <p className="text-xl font-bold tracking-wider text-foreground">
+            <p className="text-2xl font-bold tracking-wider text-primary">
               {bookingReference}
             </p>
           </div>

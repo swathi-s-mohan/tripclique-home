@@ -17,26 +17,37 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 15%;
 
-    --primary: 0 0% 15%;
+    /* Travel-inspired theme colors */
+    --primary: 11 85% 63%; /* Coral-orange #FF6B4A */
     --primary-foreground: 0 0% 98%;
 
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 15%;
+    --secondary: 186 73% 41%; /* Teal-blue #1C9AB6 */
+    --secondary-foreground: 0 0% 98%;
 
     --muted: 0 0% 96%;
     --muted-foreground: 0 0% 45%;
 
-    --accent: 0 0% 96%;
-    --accent-foreground: 0 0% 15%;
+    --accent: 186 73% 41%; /* Teal-blue accent */
+    --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 343 89% 62%; /* Red #EA5455 */
     --destructive-foreground: 0 0% 98%;
+
+    --success: 142 69% 48%; /* Green #28C76F */
+    --success-foreground: 0 0% 98%;
 
     --border: 0 0% 91%;
     --input: 0 0% 91%;
     --ring: 0 0% 15%;
 
-    --radius: 0.75rem;
+    --radius: 1rem; /* Larger radius for modern look */
+
+    /* Travel-inspired design tokens */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(11 90% 58%));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(186 80% 35%));
+    --shadow-soft: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.06);
+    --shadow-floating: 0 10px 15px -3px hsl(0 0% 0% / 0.1), 0 4px 6px -2px hsl(0 0% 0% / 0.05);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     /* amiGO specific tokens */
     --trip-avatar-bg: 0 0% 25%;
@@ -86,8 +97,11 @@ All colors MUST be HSL.
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 343 89% 62%;
     --destructive-foreground: 210 40% 98%;
+
+    --success: 142 69% 48%;
+    --success-foreground: 210 40% 98%;
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;

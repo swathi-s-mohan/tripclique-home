@@ -103,11 +103,11 @@ export const BookingDetailsModal = ({
         <div className="px-4 sm:px-6 pb-6 space-y-6 overflow-x-hidden">
           {/* Booking Item Section */}
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/30 flex items-center justify-center flex-shrink-0 shadow-soft">
               {isHotel ? (
-                <Building2 className="w-6 h-6 text-foreground" />
+                <div className="text-2xl">🏨</div>
               ) : (
-                <Plane className="w-6 h-6 text-foreground" />
+                <div className="text-2xl">✈️</div>
               )}
             </div>
             <div className="flex-1 min-w-0 overflow-hidden">
@@ -165,8 +165,8 @@ export const BookingDetailsModal = ({
           </div>
 
           {/* Booking Summary Card */}
-          <div className="bg-muted/50 rounded-lg p-4 shadow-sm space-y-3 overflow-x-hidden">
-            <h4 className="font-semibold text-base mb-3">Booking Summary</h4>
+          <div className="bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/20 rounded-2xl p-6 space-y-4 shadow-soft overflow-x-hidden">
+            <h4 className="font-bold text-lg mb-4 text-foreground">Booking Summary</h4>
 
             <div className="space-y-2">
               <div className="flex justify-between items-center gap-2">
@@ -243,9 +243,9 @@ export const BookingDetailsModal = ({
                 </span>
               </div>
 
-              <div className="flex justify-between items-center pt-2 border-t border-border gap-2">
-                <span className="text-sm font-semibold flex-shrink-0">Total:</span>
-                <span className="text-lg font-bold text-right break-words">
+              <div className="flex justify-between items-center pt-4 border-t border-primary/20 gap-2">
+                <span className="text-base font-bold flex-shrink-0 text-foreground">Total:</span>
+                <span className="text-2xl font-bold text-right break-words text-primary">
                   {isHotel
                     ? `${(booking as Hotel).price_per_night}/night`
                     : (booking as Flight).price_current}
@@ -263,7 +263,7 @@ export const BookingDetailsModal = ({
 
             <Button
               onClick={handleProceedToPayment}
-              className="w-full h-12 rounded-full bg-foreground text-background hover:bg-foreground/90 font-semibold"
+              className="w-full h-14 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-bold text-lg shadow-floating hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200"
             >
               Proceed to Payment
             </Button>

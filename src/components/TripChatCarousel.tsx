@@ -243,7 +243,24 @@ export const TripChatItem: React.FC<TripChatItemProps> = ({ trip }) => {
               <span className="text-xs text-muted-foreground">{message.timestamp}</span>
             </div>
             <div className="bg-white border border-gray-200 rounded-2xl p-4">
-              <FlightCard {...message.flightData} />
+              <FlightCard 
+                departure_time={message.flightData.departureTime}
+                origin_code={message.flightData.departureCode}
+                origin_city={message.flightData.departureCity}
+                arrival_time={message.flightData.arrivalTime}
+                dest_code={message.flightData.arrivalCode}
+                dest_city={message.flightData.arrivalCity}
+                duration={message.flightData.flightDuration}
+                airline={message.flightData.airline}
+                flight_code={message.flightData.flightCode}
+                cabin={message.flightData.classType}
+                price_current={message.flightData.price}
+                price_strike={message.flightData.oldPrice || ""}
+                stops={0}
+                stops_text="Non-stop"
+                date={new Date().toISOString()}
+                travellers={4}
+              />
             </div>
           </div>
         </div>
