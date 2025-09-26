@@ -76,7 +76,7 @@ const SignUp = () => {
           {/* Logo */}
           <div className="text-center mb-12 mt-8">
             <div className="flex justify-center mb-4">
-              <img src={amigoLogo} alt="amiGo" className="h-20 w-auto" />
+              <img src={amigoLogo} alt="amiGo" className="h-24 w-auto" />
             </div>
           </div>
 

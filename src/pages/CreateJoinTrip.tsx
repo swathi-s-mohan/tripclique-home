@@ -18,7 +18,7 @@ const CreateJoinTrip = ({ showHeader = true }: { showHeader?: boolean }) => {
           >
             <ArrowLeft className="w-6 h-6 text-foreground" />
           </button>
-          <img src={amigoLogo} alt="amiGo" className="h-8 w-auto" />
+          <img src={amigoLogo} alt="amiGo" className="h-10 w-auto" />
         </header>
         )}
         
