@@ -78,11 +78,10 @@ const Login = () => {
         {/* Content */}
         <div className="flex-1 px-6 py-8">
           {/* Logo */}
-          {/* <div className="text-center mb-12 mt-8">
+          <div className="text-center mb-12 mt-8">
             <div className="flex justify-center mb-4">
-              <img src={amigoLogo} alt="amiGo" className="h-24 w-auto" />
             </div>
-          </div> */}
+          </div>
 
           {/* Title */}
           <div className="text-center mb-8">
